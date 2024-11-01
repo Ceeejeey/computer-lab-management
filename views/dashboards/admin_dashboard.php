@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecturer Dashboard</title>
+    <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Custom Styles */
@@ -70,6 +70,16 @@
             left: auto;
         }
 
+        /* Card Styles */
+        .card {
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -87,15 +97,14 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Lecturer Dashboard</h2>
-        <a href="../lecturer/add_students.php">Add Students</a>
-        <a href="view_lab_schedule.php">View Lab Schedule</a>
-        <a href="report_issue.php">Report Issue</a>
-        <a href="view_attendance_report.php">View Attendance Report</a>
-        <a href="monitor_sessions.php">Monitor User Sessions</a>
-        <a href="view_lab_status.php">View Lab Status</a>
-        <a href="respond_complaints.php">Respond to Complaints</a>
-        <a href="schedule_lab_sessions.php">Schedule Lab Sessions</a>
+        <h2>Admin Dashboard</h2>
+        <a href="approve_lab_requests.php">Approve Lab Requests</a>
+        <a href="manage_students.php">Manage Students</a>
+        <a href="manage_lecturers.php">Manage Lecturers</a>
+        <a href="manage_inventory.php">Manage Inventory</a>
+        <a href="schedule_maintenance.php">Schedule Maintenance</a>
+        <a href="feedback_complaints.php">Feedback for Complaints</a>
+        <a href="logout.php">Logout</a>
     </div>
 
     <!-- Main Content -->
@@ -103,7 +112,7 @@
         <!-- Navbar -->
         <div class="navbar">
             <div>
-                <h4>Welcome, [Lecturer Name]</h4>
+                <h4>Welcome, [Admin Name]</h4>
             </div>
             <div class="profile-dropdown dropdown">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -119,75 +128,57 @@
         <!-- Dashboard Content -->
         <div class="container mt-4">
             <div class="row g-4">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Add Students</h5>
-                            <p class="card-text">Add students to the system with a default password.</p>
-                            <a href="add_student.php" class="btn btn-primary">Add Students</a>
+                            <h5 class="card-title">Approve Lab Requests</h5>
+                            <p class="card-text">View and approve or reject lab session requests.</p>
+                            <a href="approve_lab_requests.php" class="btn btn-primary">Manage Requests</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">View Lab Schedule</h5>
-                            <p class="card-text">View upcoming lab sessions and exams.</p>
-                            <a href="view_lab_schedule.php" class="btn btn-primary">View Schedule</a>
+                            <h5 class="card-title">Manage Students</h5>
+                            <p class="card-text">Add, update, or remove student accounts.</p>
+                            <a href="manage_students.php" class="btn btn-primary">Manage Students</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Report Issue</h5>
-                            <p class="card-text">Report issues with lab resources.</p>
-                            <a href="report_issue.php" class="btn btn-primary">Report Issue</a>
+                            <h5 class="card-title">Manage Lecturers</h5>
+                            <p class="card-text">Add, update, or remove lecturer accounts.</p>
+                            <a href="manage_lecturers.php" class="btn btn-primary">Manage Lecturers</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">View Attendance Report</h5>
-                            <p class="card-text">Monitor attendance records for lab sessions.</p>
-                            <a href="view_attendance_report.php" class="btn btn-primary">View Attendance</a>
+                            <h5 class="card-title">Manage Inventory</h5>
+                            <p class="card-text">Track and manage lab equipment and resources.</p>
+                            <a href="manage_inventory.php" class="btn btn-primary">Manage Inventory</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Monitor User Sessions</h5>
-                            <p class="card-text">Track active user sessions in labs.</p>
-                            <a href="monitor_sessions.php" class="btn btn-primary">Monitor Sessions</a>
+                            <h5 class="card-title">Schedule Maintenance</h5>
+                            <p class="card-text">Plan and schedule maintenance for lab equipment.</p>
+                            <a href="schedule_maintenance.php" class="btn btn-primary">Schedule Maintenance</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">View Lab Status</h5>
-                            <p class="card-text">Check the current status of lab equipment and availability.</p>
-                            <a href="view_lab_status.php" class="btn btn-primary">View Status</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Respond to Complaints</h5>
-                            <p class="card-text">Review and respond to complaints from students.</p>
-                            <a href="respond_complaints.php" class="btn btn-primary">Respond</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Schedule Lab Sessions</h5>
-                            <p class="card-text">Schedule new lab sessions and exams.</p>
-                            <a href="schedule_lab_sessions.php" class="btn btn-primary">Schedule Sessions</a>
+                            <h5 class="card-title">Feedback for Complaints</h5>
+                            <p class="card-text">Review and provide feedback on student complaints.</p>
+                            <a href="feedback_complaints.php" class="btn btn-primary">View Feedback</a>
                         </div>
                     </div>
                 </div>

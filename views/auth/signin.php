@@ -2,7 +2,6 @@
 session_start();
 include '../../config/config.php';
 
-// Initialize session variable for the toast if it's not set
 if (!isset($_SESSION['showToast'])) {
     $_SESSION['showToast'] = false;
 }
@@ -26,30 +25,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Password correct, set session variables
             $_SESSION['user_id'] = $id;
             $_SESSION['name'] = $name;
-            $_SESSION['role'] = $role;
 
-            // Redirect to the appropriate dashboard
-            if ($role == 'student') {
-                header("Location: ../dashboards/student_dashboard.php");
-                exit();
+            // Redirect based on role
+            if ($role === 'admin') {
+                header("Location: ../dashboards/admin_dashboard.php");
             } else {
-                header("Location: ../staff/dashboard.php");
-                exit();
+                header("Location: ../dashboards/lecturer_dashboard.php");
             }
+            exit();
         } else {
             // Invalid password, set session variable to show toast
             $_SESSION['showInvalidPasswordToast'] = true;
-
         }
     } else {
         $_SESSION['showNoUserToast'] = true;
-
     }
 
     $stmt->close();
     $conn->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -202,22 +198,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        <?php if (isset($_SESSION['showInvalidPasswordToast']) && $_SESSION['showInvalidPasswordToast'] === true): ?>
-            var toastElement1 = document.getElementById('invalidPasswordToast');
-            var toast1 = new bootstrap.Toast(toastElement1);
-            toast1.show();
-            <?php $_SESSION['showInvalidPasswordToast'] = false; // Reset after showing the toast ?>
-        <?php endif; ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (isset($_SESSION['showInvalidPasswordToast']) && $_SESSION['showInvalidPasswordToast'] === true): ?>
+                var toastElement1 = document.getElementById('invalidPasswordToast');
+                var toast1 = new bootstrap.Toast(toastElement1);
+                toast1.show();
+                <?php $_SESSION['showInvalidPasswordToast'] = false; // Reset after showing the toast 
+                ?>
+            <?php endif; ?>
 
-        <?php if (isset($_SESSION['showNoUserToast']) && $_SESSION['showNoUserToast'] === true): ?>
-            var toastElement2 = document.getElementById('noUserToast');
-            var toast2 = new bootstrap.Toast(toastElement2);
-            toast2.show();
-            <?php $_SESSION['showNoUserToast'] = false; // Reset after showing the toast ?>
-        <?php endif; ?>
-    });
-</script>
+            <?php if (isset($_SESSION['showNoUserToast']) && $_SESSION['showNoUserToast'] === true): ?>
+                var toastElement2 = document.getElementById('noUserToast');
+                var toast2 = new bootstrap.Toast(toastElement2);
+                toast2.show();
+                <?php $_SESSION['showNoUserToast'] = false; // Reset after showing the toast 
+                ?>
+            <?php endif; ?>
+        });
+    </script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

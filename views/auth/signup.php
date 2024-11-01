@@ -154,7 +154,7 @@
     <div class="container">
         <h2>Sign Up</h2>
         <form action="http://localhost/lab_management/controllers/signup_process.php" method="POST">
-            
+
             <div class="form-group">
                 <label for="name">Full Name:</label>
                 <input type="text" id="name" name="name" required class="form-control">
@@ -168,13 +168,11 @@
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required class="form-control">
-                
+
                 <!-- Password strength meter -->
                 <div class="strength-meter">
                     <div id="strength-bar"></div>
                 </div>
-
-                
             </div>
 
             <div class="form-group">
@@ -185,9 +183,22 @@
             <div class="form-group">
                 <label for="role">Role:</label>
                 <select id="role" name="role" class="form-control" required>
-                    <option value="student">Student</option>
-                    <option value="staff">Staff</option>
-                    <option value="admin">Admin</option>
+                    <option value="lecturer">Lecturer</option>
+                    <!-- Admin option only if there is no existing admin -->
+                    <?php
+                        include '../../config/config.php';
+                        $query = "SELECT COUNT(*) as count FROM users WHERE role = 'admin'";
+                        $result = $conn->query($query);
+
+                        if ($result) { // Check if query succeeded
+                            $row = $result->fetch_assoc();
+                            if ($row['count'] == 0) {
+                                echo '<option value="admin">Admin</option>';
+                            }
+                        } else {
+                            echo "<option disabled>Error fetching roles</option>";
+                        }
+                    ?>
                 </select>
             </div>
 
@@ -205,7 +216,6 @@
         const password = document.getElementById('password');
         const confirmPassword = document.getElementById('confirm_password');
         const strengthBar = document.getElementById('strength-bar');
-        const strengthText = document.getElementById('password-strength-text');
         const signupBtn = document.getElementById('signup-btn');
 
         // Password Strength Meter Logic
@@ -253,7 +263,7 @@
             }
         });
     </script>
-
 </body>
+
 
 </html>

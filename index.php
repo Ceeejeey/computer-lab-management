@@ -146,6 +146,7 @@
             <div class="buttons">
                 <a href="http://localhost/lab_management/views/auth/signup.php">Sign Up</a>
                 <a href="http://localhost/lab_management/views/auth/signin.php">Sign In</a>
+                <a href="http://localhost/lab_management/views/auth/student_signin.php">Student Sign In</a>
             </div>
 
             <footer>

@@ -22,22 +22,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Successful sign-in: Set session variables and redirect to dashboard
         $_SESSION['student_id'] = $student['id'];
         $_SESSION['student_name'] = $student['name'];
-        header("Location: ../views/dashboards/student_dashboard.php");
-        // Close the prepared statement
+        $_SESSION['student_batch'] = $student['batch']; // Set batch for future use
+        
+        // Redirect to the student dashboard
+        // Close the prepared statement and the database connection
         mysqli_stmt_close($stmt);
-        // Close the database connection
         mysqli_close($conn);
-        exit;
+        
+        header("Location: ../views/dashboards/student_dashboard.php");
+        exit; // Ensure no further code is executed after redirect
     } else {
-
-
+        // Invalid credentials: set a toast notification flag
         $_SESSION['showInvalidPasswordToast'] = true;
+
+        // Close the prepared statement and the database connection
+        mysqli_stmt_close($stmt);
+        mysqli_close($conn);
+
         header('Location: ../views/auth/student_signin.php');
+        exit;
     }
 } else {
     // Direct access without form submission: Redirect back to sign-in
     header("Location: student_signin.php");
-    // Close the database connection
-    mysqli_close($conn);
     exit;
 }
+?>

@@ -2,6 +2,7 @@
 session_start();
 include '../../config/config.php';
 
+// Initialize session variables for toast notifications
 if (!isset($_SESSION['showToast'])) {
     $_SESSION['showToast'] = false;
 }
@@ -26,25 +27,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['user_id'] = $id;
             $_SESSION['name'] = $name;
 
-            // Redirect based on role
-            if ($role === 'admin') {
-                header("Location: ../dashboards/admin_dashboard.php");
-            } else {
+            // Set lecturer_id session variable if role is lecturer
+            if ($role === 'lecturer') {
+                $_SESSION['lecturer_id'] = $id; // Set lecturer_id for lecturer role
                 header("Location: ../dashboards/lecturer_dashboard.php");
+            } elseif ($role === 'admin') {
+                header("Location: ../dashboards/admin_dashboard.php");
             }
             exit();
         } else {
-            // Invalid password, set session variable to show toast
+            // Invalid password, set session variable to show invalid password toast
             $_SESSION['showInvalidPasswordToast'] = true;
         }
     } else {
+        // No user found, set session variable to show no user toast
         $_SESSION['showNoUserToast'] = true;
     }
 
+    // Close statement and connection
     $stmt->close();
     $conn->close();
 }
 ?>
+
 
 
 <!DOCTYPE html>

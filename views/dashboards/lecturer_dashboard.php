@@ -89,13 +89,14 @@
     <div class="sidebar">
         <h2>Lecturer Dashboard</h2>
         <a href="../lecturer/add_students.php">Add Students</a>
+        <a href="../lecturer/request_lab.php">Schedule Lab Sessions</a>
         <a href="view_lab_schedule.php">View Lab Schedule</a>
         <a href="report_issue.php">Report Issue</a>
         <a href="view_attendance_report.php">View Attendance Report</a>
         <a href="monitor_sessions.php">Monitor User Sessions</a>
         <a href="view_lab_status.php">View Lab Status</a>
         <a href="respond_complaints.php">Respond to Complaints</a>
-        <a href="schedule_lab_sessions.php">Schedule Lab Sessions</a>
+        
     </div>
 
     <!-- Main Content -->
@@ -111,7 +112,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                     <li><a class="dropdown-item" href="profile.php">Go to Profile</a></li>
-                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
                 </ul>
             </div>
         </div>

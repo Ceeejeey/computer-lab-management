@@ -90,7 +90,7 @@
         <h2>Lecturer Dashboard</h2>
         <a href="../lecturer/add_students.php">Add Students</a>
         <a href="../lecturer/request_lab.php">Schedule Lab Sessions</a>
-        <a href="view_lab_schedule.php">View Lab Schedule</a>
+        <a href="../lecturer/lab_schedule.php">View Lab Schedule</a>
         <a href="report_issue.php">Report Issue</a>
         <a href="view_attendance_report.php">View Attendance Report</a>
         <a href="monitor_sessions.php">Monitor User Sessions</a>
@@ -134,7 +134,7 @@
                         <div class="card-body">
                             <h5 class="card-title">View Lab Schedule</h5>
                             <p class="card-text">View upcoming lab sessions and exams.</p>
-                            <a href="view_lab_schedule.php" class="btn btn-primary">View Schedule</a>
+                            <a href="../lecturer/lab_schedule.php" class="btn btn-primary">View Schedule</a>
                         </div>
                     </div>
                 </div>

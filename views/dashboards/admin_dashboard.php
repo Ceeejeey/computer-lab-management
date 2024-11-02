@@ -98,7 +98,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h2>Admin Dashboard</h2>
-        <a href="approve_lab_requests.php">Approve Lab Requests</a>
+        <a href="../admin/view_lab_request.php">Approve Lab Requests</a>
         <a href="manage_students.php">Manage Students</a>
         <a href="manage_lecturers.php">Manage Lecturers</a>
         <a href="manage_inventory.php">Manage Inventory</a>
@@ -120,7 +120,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                     <li><a class="dropdown-item" href="profile.php">Go to Profile</a></li>
-                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
                 </ul>
             </div>
         </div>

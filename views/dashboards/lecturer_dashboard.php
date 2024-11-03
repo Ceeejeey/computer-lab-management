@@ -92,7 +92,7 @@
         <a href="../lecturer/request_lab.php">Schedule Lab Sessions</a>
         <a href="../lecturer/lab_schedule.php">View Lab Schedule</a>
         <a href="report_issue.php">Report Issue</a>
-        <a href="view_attendance_report.php">View Attendance Report</a>
+        <a href="../lecturer/view_attendance.php">View Attendance Report</a>
         <a href="monitor_sessions.php">Monitor User Sessions</a>
         <a href="view_lab_status.php">View Lab Status</a>
         <a href="respond_complaints.php">Respond to Complaints</a>

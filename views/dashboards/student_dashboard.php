@@ -1,67 +1,63 @@
 <?php
-session_start(); 
-include '../../config/config.php'; 
+session_start();
+include '../../config/config.php';
 
 date_default_timezone_set('Asia/Colombo');
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
-if (!isset($_SESSION['student_batch'])) {
-    die("Student batch is not set in the session.");
+if (!isset($_SESSION['student_batch']) || !isset($_SESSION['student_id'])) {
+    die("Student batch or ID is not set in the session.");
 }
 
-$student_batch = $_SESSION['student_batch']; 
+$student_id = $_SESSION['student_id'];
+$student_batch = $_SESSION['student_batch'];
 echo "<script>console.log('Student batch: " . addslashes($student_batch) . "');</script>";
 
 $today = date("Y-m-d");
-$current_time = date("Y-m-d H:i:s"); 
+$current_time = date("Y-m-d H:i:s");
 
 echo "<script>console.log('Current time: " . addslashes($current_time) . "');</script>";
-
 
 $schedules = [];
 
 $start_of_day = $today . ' 00:00:00';
 $end_of_day = $today . ' 23:59:59';
 
-$stmt = $conn->prepare("SELECT batch, topic, start_time, end_time FROM lab_schedule WHERE start_time BETWEEN ? AND ? AND batch = ?");
+$stmt = $conn->prepare("SELECT id, batch, topic, start_time, end_time FROM lab_schedule WHERE start_time BETWEEN ? AND ? AND batch = ?");
 $stmt->bind_param("sss", $start_of_day, $end_of_day, $student_batch);
 
 if ($stmt->execute()) {
     $result = $stmt->get_result();
-    
-    
     if ($result === false) {
         die("Database query failed: " . $stmt->error);
     }
 
     while ($row = $result->fetch_assoc()) {
-        
         $startTime = new DateTime($row['start_time']);
+        // Removed redundant assignment
         $endTime = new DateTime($row['end_time']);
         $currentTime = new DateTime($current_time);
 
-       
         if ($currentTime < $startTime) {
-            $row['status'] = 'Not Yet Started'; 
-            $row['can_attend'] = false; 
+            $row['status'] = 'Not Yet Started';
+            $row['can_attend'] = false;
         } elseif ($currentTime > $endTime) {
-            $row['status'] = 'Time Passed'; 
+            $row['status'] = 'Time Passed';
         } else {
-            $row['status'] = 'Attend'; 
-            $row['can_attend'] = true; 
+            $row['status'] = 'Attend';
+            $row['can_attend'] = true;
         }
 
-        $schedules[] = $row; 
+        $schedules[] = $row;
     }
 } else {
     die("Failed to execute statement: " . $stmt->error);
 }
 
-$stmt->close(); 
-$conn->close(); 
+$stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -74,13 +70,11 @@ $conn->close();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
         }
 
-        
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -113,13 +107,11 @@ $conn->close();
             border-radius: 5px;
         }
 
-        /* Main Content Styles */
         .main-content {
             margin-left: 250px;
             padding: 20px;
         }
 
-        /* Navbar Styles */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -138,7 +130,6 @@ $conn->close();
             left: auto;
         }
 
-        /* Heading Styles */
         .schedule-heading {
             margin-bottom: 20px;
             text-align: center;
@@ -146,7 +137,6 @@ $conn->close();
             font-weight: bold;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -163,7 +153,6 @@ $conn->close();
 
 <body>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>Student Dashboard</h2>
         <a href="view_attendance.php">View Attendance</a>
@@ -173,9 +162,7 @@ $conn->close();
         <a href="report_issue.php">Report Issue</a>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-        
         <div class="navbar">
             <div>
                 <h4>Welcome, [Student Name]</h4>
@@ -191,39 +178,67 @@ $conn->close();
             </div>
         </div>
 
-        <!-- Dashboard Content -->
         <div class="container mt-4">
-        <div class="schedule-heading">
-            <i class="fas fa-calendar-alt"></i> Today's Lab Schedule
-        </div>
-        <div class="row g-4">
-            <?php if (empty($schedules)): ?>
-                <div class="col-12 text-center">
-                    <div class="alert alert-warning" role="alert">
-                        No lab schedules available for your batch today.
-                    </div>
-                </div>
-            <?php else: ?>
-                <!-- Display the schedules -->
-                <?php foreach ($schedules as $schedule): ?>
-                    <div class="col-lg-6">
-                        <div class="card shadow-sm <?php echo ($schedule['can_attend'] ? 'bg-success text-white' : 'bg-secondary text-white'); ?>">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo $schedule['topic']; ?></h5>
-                                <p class="card-text"><strong>Batch:</strong> <?php echo $schedule['batch']; ?></p>
-                                <p class="card-text"><strong>Time:</strong> <?php echo date("g:i A", strtotime($schedule['start_time'])); ?> - <?php echo date("g:i A", strtotime($schedule['end_time'])); ?></p>
-                                <button class="btn btn-light <?php echo ($schedule['can_attend'] ? '' : 'disabled'); ?>">
-                                    <?php echo $schedule['status']; ?>
-                                </button>
-                            </div>
+            <div class="schedule-heading">
+                <i class="fas fa-calendar-alt"></i> Today's Lab Schedule
+            </div>
+            <div class="row g-4">
+                <?php if (empty($schedules)): ?>
+                    <div class="col-12 text-center">
+                        <div class="alert alert-warning" role="alert">
+                            No lab schedules available for your batch today.
                         </div>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                <?php else: ?>
+                    <?php foreach ($schedules as $schedule): ?>
+                        <?php $canAttend = isset($schedule['can_attend']) ? true : false; ?>
+                        <div class="col-lg-6">
+                            <div class="card shadow-sm <?php echo $canAttend ? 'bg-primary text-white' : 'bg-secondary text-white'; ?>">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($schedule['topic']); ?></h5>
+                                    <p class="card-text"><strong>Batch:</strong> <?php echo htmlspecialchars($schedule['batch']); ?></p>
+                                    <p class="card-text"><strong>Time:</strong> <?php echo date("g:i A", strtotime($schedule['start_time'])); ?> - <?php echo date("g:i A", strtotime($schedule['end_time'])); ?></p>
+                                    <button class="btn btn-light <?php echo $canAttend ? '' : 'disabled'; ?>"
+                                        <?php if ($canAttend): ?>
+                                        onclick="markAttendance(<?php echo $schedule['id']; ?>)"
+                                        <?php else: ?>
+                                        disabled
+                                        <?php endif; ?>>
+                                        <?php echo $canAttend ? 'Attend' : 'Cannot Attend'; ?>
+                                    </button>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 
-   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function markAttendance(sessionId) {
+            if (confirm("Are you sure you want to mark attendance for this session?")) {
+                fetch('../../controllers/student_mark_attendance.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `session_id=${sessionId}&student_id=<?php echo $student_id; ?>`
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        alert(data); // Display the response (success or error message)
+                        document.querySelector(`button[onclick="markAttendance(${sessionId})"]`).disabled = true;
+                        document.querySelector(`button[onclick="markAttendance(${sessionId})"]`).textContent = 'Marked';
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
 </body>
+
 </html>

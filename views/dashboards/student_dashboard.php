@@ -155,11 +155,10 @@ $conn->close();
 
     <div class="sidebar">
         <h2>Student Dashboard</h2>
-        <a href="view_attendance.php">View Attendance</a>
-        <a href="input_attendance.php">Input Attendance</a>
-        <a href="check_complaints.php">Check Complaints</a>
+        <a href="../student/view_attendance.php">View Attendance</a>
         <a href="view_lab_schedule.php">View Lab Schedule</a>
-        <a href="report_issue.php">Report Issue</a>
+        <a href="../student/report_issue.php">Report Issue</a>
+        <a href="check_complaints.php">Check Complaints</a>
     </div>
 
     <div class="main-content">

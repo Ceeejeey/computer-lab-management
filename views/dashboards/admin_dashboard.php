@@ -102,8 +102,8 @@
         <a href="manage_students.php">Manage Students</a>
         <a href="manage_lecturers.php">Manage Lecturers</a>
         <a href="manage_inventory.php">Manage Inventory</a>
-        <a href="schedule_maintenance.php">Schedule Maintenance</a>
-        <a href="feedback_complaints.php">Feedback for Complaints</a>
+        <a href="../admin/schedule_maintain.php">Schedule Maintenance</a>
+        <a href="../admin/review_issues.php">Feedback for Complaints</a>
         <a href="logout.php">Logout</a>
     </div>
 
@@ -125,65 +125,8 @@
             </div>
         </div>
 
-        <!-- Dashboard Content -->
-        <div class="container mt-4">
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Approve Lab Requests</h5>
-                            <p class="card-text">View and approve or reject lab session requests.</p>
-                            <a href="approve_lab_requests.php" class="btn btn-primary">Manage Requests</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Manage Students</h5>
-                            <p class="card-text">Add, update, or remove student accounts.</p>
-                            <a href="manage_students.php" class="btn btn-primary">Manage Students</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Manage Lecturers</h5>
-                            <p class="card-text">Add, update, or remove lecturer accounts.</p>
-                            <a href="manage_lecturers.php" class="btn btn-primary">Manage Lecturers</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Manage Inventory</h5>
-                            <p class="card-text">Track and manage lab equipment and resources.</p>
-                            <a href="manage_inventory.php" class="btn btn-primary">Manage Inventory</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Schedule Maintenance</h5>
-                            <p class="card-text">Plan and schedule maintenance for lab equipment.</p>
-                            <a href="schedule_maintenance.php" class="btn btn-primary">Schedule Maintenance</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Feedback for Complaints</h5>
-                            <p class="card-text">Review and provide feedback on student complaints.</p>
-                            <a href="feedback_complaints.php" class="btn btn-primary">View Feedback</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
+        
     </div>
 
     <!-- Bootstrap JS -->

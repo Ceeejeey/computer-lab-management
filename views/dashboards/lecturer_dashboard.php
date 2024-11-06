@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,6 +71,20 @@
             left: auto;
         }
 
+        .card {
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .card h5 {
+            font-weight: bold;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -77,12 +92,14 @@
                 height: auto;
                 position: relative;
             }
+
             .main-content {
                 margin-left: 0;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Sidebar -->
@@ -96,7 +113,6 @@
         <a href="monitor_sessions.php">Monitor User Sessions</a>
         <a href="view_lab_status.php">View Lab Status</a>
         <a href="respond_complaints.php">Respond to Complaints</a>
-        
     </div>
 
     <!-- Main Content -->
@@ -117,86 +133,69 @@
             </div>
         </div>
 
-        <!-- Dashboard Content -->
-        <div class="container mt-4">
-            <div class="row g-4">
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Add Students</h5>
-                            <p class="card-text">Add students to the system with a default password.</p>
-                            <a href="add_student.php" class="btn btn-primary">Add Students</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">View Lab Schedule</h5>
-                            <p class="card-text">View upcoming lab sessions and exams.</p>
-                            <a href="../lecturer/lab_schedule.php" class="btn btn-primary">View Schedule</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Report Issue</h5>
-                            <p class="card-text">Report issues with lab resources.</p>
-                            <a href="report_issue.php" class="btn btn-primary">Report Issue</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">View Attendance Report</h5>
-                            <p class="card-text">Monitor attendance records for lab sessions.</p>
-                            <a href="view_attendance_report.php" class="btn btn-primary">View Attendance</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Monitor User Sessions</h5>
-                            <p class="card-text">Track active user sessions in labs.</p>
-                            <a href="monitor_sessions.php" class="btn btn-primary">Monitor Sessions</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">View Lab Status</h5>
-                            <p class="card-text">Check the current status of lab equipment and availability.</p>
-                            <a href="view_lab_status.php" class="btn btn-primary">View Status</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Respond to Complaints</h5>
-                            <p class="card-text">Review and respond to complaints from students.</p>
-                            <a href="respond_complaints.php" class="btn btn-primary">Respond</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Schedule Lab Sessions</h5>
-                            <p class="card-text">Schedule new lab sessions and exams.</p>
-                            <a href="schedule_lab_sessions.php" class="btn btn-primary">Schedule Sessions</a>
-                        </div>
-                    </div>
+        <!-- Maintenance Notification Card -->
+        <?php
+        // Database connection
+        include_once '../../config/config.php';
+
+        // Query to check for any upcoming maintenance
+        $maintenance_query = "SELECT * FROM maintenance WHERE status = 'Scheduled' ORDER BY start_time LIMIT 1";
+        $maintenance_result = mysqli_query($conn, $maintenance_query);
+
+        if (mysqli_num_rows($maintenance_result) > 0) {
+            $maintenance = mysqli_fetch_assoc($maintenance_result);
+        ?>
+            <div class="card shadow-sm border-warning">
+                <div class="card-body">
+                    <h5 class="card-title text-warning"><i class="icon bi bi-tools"></i>Maintenance Scheduled</h5>
+                    <p class="card-text">
+                        <strong>Description:</strong> <?php echo $maintenance['description']; ?><br>
+                        <strong>Start Time:</strong> <?php echo date("d M Y, H:i", strtotime($maintenance['start_time'])); ?><br>
+                        <strong>End Time:</strong> <?php echo date("d M Y, H:i", strtotime($maintenance['end_time'])); ?>
+                    </p>
+                    <span class="badge bg-warning text-dark">Status: <?php echo $maintenance['status']; ?></span>
                 </div>
             </div>
-        </div>
+        <?php
+        }
+        ?>
+
+        <!-- Lab Availability Card -->
+        <?php
+        // Query to check if labs are available
+        $lab_query = "SELECT * FROM lab_schedule WHERE start_time > NOW() ORDER BY start_time LIMIT 1";
+        $lab_result = mysqli_query($conn, $lab_query);
+
+        if (mysqli_num_rows($lab_result) == 0) {
+        ?>
+            <div class="card shadow-sm border-success mt-4">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="icon bi bi-check-circle"></i>Lab Available</h5>
+                    <p class="card-text">Lab is available for scheduling.</p>
+                </div>
+            </div>
+        <?php
+        } else {
+            $lab_schedule = mysqli_fetch_assoc($lab_result);
+        ?>
+            <div class="card shadow-sm border-danger mt-4">
+                <div class="card-body">
+                    <h5 class="card-title text-danger"><i class="icon bi bi-exclamation-circle"></i>Lab Unavailable</h5>
+                    <p class="card-text">
+                        <strong>Next Scheduled Session:</strong> <?php echo date("d M Y, H:i", strtotime($lab_schedule['start_time'])); ?><br>
+                        <strong>Topic:</strong> <?php echo $lab_schedule['lecture_topic']; ?><br>
+                        <strong>Batch:</strong> <?php echo $lab_schedule['batch']; ?>
+                    </p>
+                    <span class="badge bg-danger">Status: Scheduled</span>
+                </div>
+            </div>
+        <?php
+        }
+        ?>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

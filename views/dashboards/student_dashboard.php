@@ -79,7 +79,7 @@ $conn->close();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'poppins', Arial, sans-serif;
             background-color: #f4f6f9;
         }
 
@@ -96,7 +96,7 @@ $conn->close();
 
         .sidebar h2 {
             text-align: center;
-            font-weight: bold;
+            font-weight: 500;
             color: #ffffff;
         }
 
@@ -145,6 +145,11 @@ $conn->close();
             font-weight: bold;
         }
 
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -163,11 +168,11 @@ $conn->close();
 
     <div class="sidebar">
         <h2>Student Dashboard</h2>
-        <a href="../student/view_attendance.php">View Attendance</a>
-        <a href="view_lab_schedule.php">View Lab Schedule</a>
-        <a href="../student/report_issue.php">Report Issue</a>
-        <a href="check_complaints.php">Check Complaints</a>
+        <a href="../student/view_attendance.php"><i class="fas fa-calendar-check"></i> View Attendance</a>
+        <a href="../student/report_issue.php"><i class="fas fa-exclamation-triangle"></i> Report Issue</a>
+        <a href="../student/check_complaints.php"><i class="fas fa-question-circle"></i> Check Complaints</a>
     </div>
+
 
     <div class="main-content">
         <div class="navbar">

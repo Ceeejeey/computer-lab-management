@@ -27,15 +27,19 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
     <style>
-         /* Custom Styles */
-         body {
-            font-family: Arial, sans-serif;
+        /* Custom Styles */
+        body {
+            font-family: 'poppins', Arial, sans-serif;
             background-color: #f4f6f9;
         }
 
@@ -53,7 +57,7 @@ $conn->close();
 
         .sidebar h2 {
             text-align: center;
-            font-weight: bold;
+            font-weight: 500;
             color: #ffffff;
         }
 
@@ -141,6 +145,11 @@ $conn->close();
             max-width: 400px;
         }
 
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -148,47 +157,50 @@ $conn->close();
                 height: auto;
                 position: relative;
             }
+
             .main-content {
                 margin-left: 0;
             }
         }
     </style>
+
 </head>
+
 <body>
 
     <!-- Sidebar -->
     <div class="sidebar">
         <h2>Admin Dashboard</h2>
-        <a href="../admin/view_lab_request.php">Approve Lab Requests</a>
-        <a href="../admin/view_students.php">Manage Students</a>
-        <a href="../admin/view_lectureres.php">Manage Lecturers</a>
-        <a href="../admin/view_attendance_report.php">View Attendance Report</a>
-        <a href="../admin/schedule_maintain.php">Schedule Maintenance</a>
-        <a href="../admin/review_issues.php">Feedback for Complaints</a>
-        
+        <a href="../admin/view_lab_request.php"><i class="fas fa-check-circle"></i> Approve Lab Requests</a>
+        <a href="../admin/view_students.php"><i class="fas fa-user-graduate"></i> Manage Students</a>
+        <a href="../admin/view_lectureres.php"><i class="fas fa-chalkboard-teacher"></i> Manage Lecturers</a>
+        <a href="../admin/view_attendance_report.php"><i class="fas fa-file-alt"></i> View Attendance Report</a>
+        <a href="../admin/schedule_maintain.php"><i class="fas fa-calendar-alt"></i> Schedule Maintenance</a>
+        <a href="../admin/review_issues.php"><i class="fas fa-comment-dots"></i> Feedback for Complaints</a>
     </div>
+
 
     <!-- Main Content -->
     <div class="main-content">
-        
-        <!-- Navbar -->
-    <div class="navbar">
-        <div>
-            <h4>Welcome, <?php echo htmlspecialchars($adminName); ?></h4>
-        </div>
-        <div class="profile-dropdown dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Profile
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                <li><a class="dropdown-item" href="profile.php">Go to Profile</a></li>
-                <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
-            </ul>
-        </div>
-    </div>
 
-    <!-- Wrapper Container for Lecturer Selection and Attendance Chart -->
-    <div class="wrapper-container mt-4">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div>
+                <h4>Welcome, <?php echo htmlspecialchars($adminName); ?></h4>
+            </div>
+            <div class="profile-dropdown dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Profile
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="profile.php">Go to Profile</a></li>
+                    <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Wrapper Container for Lecturer Selection and Attendance Chart -->
+        <div class="wrapper-container mt-4">
             <h5>Attendance Chart by Lecturer</h5>
             <label for="lecturerSelect" class="form-label">Select Lecturer:</label>
             <select id="lecturerSelect" class="form-select" aria-label="Select Lecturer">
@@ -200,79 +212,80 @@ $conn->close();
             </div>
         </div>
 
-        
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Function to populate lecturers dropdown
-    fetch('../admin/get_lecturers.php')  // Adjust path to your lecturers fetching endpoint
-        .then(response => response.json())
-        .then(lecturers => {
-            const lecturerSelect = document.getElementById("lecturerSelect");
-            lecturers.forEach(lecturer => {
-                const option = document.createElement("option");
-                option.value = lecturer.id;
-                option.text = lecturer.name;
-                lecturerSelect.add(option);
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Function to populate lecturers dropdown
+            fetch('../admin/get_lecturers.php') // Adjust path to your lecturers fetching endpoint
+                .then(response => response.json())
+                .then(lecturers => {
+                    const lecturerSelect = document.getElementById("lecturerSelect");
+                    lecturers.forEach(lecturer => {
+                        const option = document.createElement("option");
+                        option.value = lecturer.id;
+                        option.text = lecturer.name;
+                        lecturerSelect.add(option);
+                    });
+                });
+
+            const attendanceChart = new Chart(document.getElementById("attendanceChart").getContext("2d"), {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Attendance Count',
+                        data: [],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Attendance Count'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Session ID'
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Fetch and display attendance data based on selected lecturer
+            document.getElementById("lecturerSelect").addEventListener("change", function() {
+                const lecturerId = this.value;
+                if (!lecturerId) return; // No lecturer selected
+
+                fetch(`../../controllers/admin_fetch_attendance_by_lecturer.php?lecturer_id=${lecturerId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const sessionIds = data.map(item => item.session_id);
+                        const attendanceCounts = data.map(item => item.attendance_count);
+
+                        // Update chart data
+                        attendanceChart.data.labels = sessionIds;
+                        attendanceChart.data.datasets[0].data = attendanceCounts;
+                        attendanceChart.update();
+                    })
+                    .catch(error => console.error('Error fetching attendance data:', error));
             });
         });
-
-    const attendanceChart = new Chart(document.getElementById("attendanceChart").getContext("2d"), {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Attendance Count',
-                data: [],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Attendance Count'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Session ID'
-                    }
-                }
-            },
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-
-    // Fetch and display attendance data based on selected lecturer
-    document.getElementById("lecturerSelect").addEventListener("change", function() {
-        const lecturerId = this.value;
-        if (!lecturerId) return;  // No lecturer selected
-
-        fetch(`../../controllers/admin_fetch_attendance_by_lecturer.php?lecturer_id=${lecturerId}`)
-            .then(response => response.json())
-            .then(data => {
-                const sessionIds = data.map(item => item.session_id);
-                const attendanceCounts = data.map(item => item.attendance_count);
-
-                // Update chart data
-                attendanceChart.data.labels = sessionIds;
-                attendanceChart.data.datasets[0].data = attendanceCounts;
-                attendanceChart.update();
-            })
-            .catch(error => console.error('Error fetching attendance data:', error));
-    });
-});
-</script>
+    </script>
 </body>
+
 </html>

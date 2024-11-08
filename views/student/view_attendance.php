@@ -35,28 +35,45 @@ $result = $stmt->get_result();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             background-color: #f4f6f9;
             color: #333;
+            margin: 0;
+            padding: 0;
         }
-        .container {
-            max-width: 900px;
+        .wrapper {
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
             margin: 0 auto;
+            margin-top: 20px;
         }
         .attendance-card {
             background-color: #ffffff;
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            margin-top: 20px;
-            padding: 20px;
+            padding: 30px;
+        }
+        .attendance-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4a4a4a;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .attendance-table {
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .attendance-table th, .attendance-table td {
+        .attendance-table th {
+            background-color: #333;
+            color: #fff;
+            font-weight: 500;
+        }
+        .attendance-table td {
             vertical-align: middle;
         }
         .status-present {
@@ -67,15 +84,32 @@ $result = $stmt->get_result();
             color: #dc3545;
             font-weight: bold;
         }
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn-dashboard {
+            display: inline-block;
+            margin-bottom: 20px;
+            background-color: #3b82f6;
+            color: #ffffff;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2 class="text-center mb-4">My Attendance Records</h2>
+<div class="wrapper">
+
     <div class="attendance-card">
+    <a href="../dashboards/student_dashboard.php" class="btn-dashboard">Go to Dashboard</a>
+        <h2 class="attendance-title">My Attendance Records</h2>
         <?php if ($result->num_rows > 0): ?>
-            <table class="table attendance-table">
-                <thead class="table-dark">
+            <table class="table table-striped table-hover attendance-table">
+                <thead>
                 <tr>
                     <th scope="col">Session ID</th>
                     <th scope="col">Topic</th>
@@ -90,8 +124,8 @@ $result = $stmt->get_result();
                         <td><?php echo htmlspecialchars($row['lab_session_id']); ?></td>
                         <td><?php echo htmlspecialchars($row['topic']); ?></td>
                         <td><?php echo htmlspecialchars($row['date']); ?></td>
-                        <td class="<?php echo $row['status'] == 1 ? 'status-present' : 'status-absent'; ?>">
-                            <?php echo $row['status'] == 'present' ? "Present" : "Absent"; ?>
+                        <td class="<?php echo $row['status'] == 'present' ? 'status-present' : 'status-absent'; ?>">
+                            <?php echo ucfirst($row['status']); ?>
                         </td>
                         <td><?php echo htmlspecialchars($row['marked_at']); ?></td>
                     </tr>
@@ -99,7 +133,7 @@ $result = $stmt->get_result();
                 </tbody>
             </table>
         <?php else: ?>
-            <p class="text-center">No attendance records found.</p>
+            <p class="text-center text-muted">No attendance records found.</p>
         <?php endif; ?>
     </div>
 </div>

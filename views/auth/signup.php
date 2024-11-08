@@ -9,7 +9,7 @@
     <style>
         body {
             background-color: #f0f4f7;
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'poppins','Open Sans', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;

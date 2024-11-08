@@ -32,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['lecturer_id'] = $id; // Set lecturer_id for lecturer role
                 header("Location: ../dashboards/lecturer_dashboard.php");
             } elseif ($role === 'admin') {
+                $_SESSION['admin_id'] = $id;
                 header("Location: ../dashboards/admin_dashboard.php");
             }
             exit();

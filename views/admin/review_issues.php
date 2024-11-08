@@ -45,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         body {
             background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
         }
         .main-container {
             margin-top: 30px;

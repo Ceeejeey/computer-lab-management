@@ -88,7 +88,7 @@ if (isset($_GET['download'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family:'poppins', Arial, sans-serif;
             background-color: #f8f9fa;
             color: #333;
             margin: 0;
@@ -249,6 +249,8 @@ if (isset($_GET['download'])) {
                 </tbody>
             </table>
         <?php endif; ?>
+        <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

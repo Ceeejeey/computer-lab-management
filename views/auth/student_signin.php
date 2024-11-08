@@ -15,7 +15,7 @@
             align-items: center;
             height: 100vh;
             background: linear-gradient(135deg, #eef2f3, #dfe7fd);
-            font-family: Arial, sans-serif;
+            font-family: 'poppins',Arial, sans-serif;
         }
 
         .signin-container {

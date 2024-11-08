@@ -16,25 +16,45 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
             background-color: #f4f6f9;
         }
-        .container {
-            margin-top: 20px;
+        .wrapper {
+            margin-top: 40px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
         .table {
             margin-top: 20px;
         }
+        .table thead th {
+            background-color: #000;
+            color: #ffffff;
+            font-weight: 400;
+            
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-approve, .btn-reject {
+            color: white;
+            transition: transform 0.2s;
+        }
         .btn-approve {
             background-color: #28a745;
-            color: white;
+        }
+        .btn-approve:hover {
+            background-color: #218838;
+            transform: scale(1.05);
         }
         .btn-reject {
             background-color: #dc3545;
-            color: white;
         }
-        .btn-approve:hover, .btn-reject:hover {
-            opacity: 0.8;
+        .btn-reject:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
         }
         /* Smooth row removal */
         .fade-out {
@@ -48,8 +68,8 @@ $result = $conn->query($sql);
 </head>
 <body>
 
-<div class="container">
-    <h2 class="mb-4">Review Lab Requests</h2>
+<div class="container wrapper">
+    <h2 class="mb-4 text-center">Review Lab Requests</h2>
 
     <!-- Toast Notification -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -98,6 +118,8 @@ $result = $conn->query($sql);
             <?php endif; ?>
         </tbody>
     </table>
+    <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -129,8 +151,8 @@ function showToast(message, isError = false) {
     const toastEl = document.getElementById('toastNotification');
     const toastBody = toastEl.querySelector('.toast-body');
     toastBody.textContent = message;
-    toastEl.classList.remove('bg-primary', 'bg-danger');
-    toastEl.classList.add(isError ? 'bg-danger' : 'bg-primary');
+    toastEl.classList.remove('bg-success', 'bg-danger');
+    toastEl.classList.add(isError ? 'bg-danger' : 'bg-success');
 
     const toast = new bootstrap.Toast(toastEl);
     toast.show();

@@ -28,20 +28,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['message'] = "Lab request submitted successfully.";
-            header("Location: ../views/dashboards/lecturer_dashboard.php");
+            $_SESSION['message_type'] = "success";
         } else {
-            $_SESSION['error'] = "Error submitting lab request.";
-            header("Location: ../views/lecturer/request_lab.php");
+            $_SESSION['message'] = "Error submitting lab request.";
+            $_SESSION['message_type'] = "error";
         }
     } else {
         // Lab is not available
-        $_SESSION['error'] = "Lab is not available for the requested time slot.";
-        header("Location: ../views/lecturer/request_lab.php");
+        $_SESSION['message'] = "Lab is not available for the requested time slot.";
+        $_SESSION['message_type'] = "error";
     }
 
-    // Close statement
-    mysqli_stmt_close($stmt);
-} else {
+    // Redirect back to the request lab page
     header("Location: ../views/lecturer/request_lab.php");
     exit;
 }

@@ -8,7 +8,7 @@
     <style>
         body {
             background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
+            font-family:'poppins', Arial, sans-serif;
         }
         .container {
             max-width: 600px;
@@ -70,6 +70,8 @@
             </div>
             <button type="submit" class="btn btn-primary">Schedule Maintenance</button>
         </form>
+        <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+
     </div>
 </body>
 </html>

@@ -34,11 +34,13 @@
         .btn-custom:hover {
             background-color: #0056b3;
         }
+       
     </style>
 </head>
 
 <body>
     <div class="container">
+    
         <h2>Add Student</h2>
         <form action="../../controllers/process_add_student.php" method="POST">
             <div class="mb-3">

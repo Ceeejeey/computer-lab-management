@@ -24,7 +24,7 @@ $studentResult = $conn->query($studentQuery);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family:'poppins', Arial, sans-serif;
             background-color: #f8fafc;
         }
         
@@ -43,7 +43,7 @@ $studentResult = $conn->query($studentQuery);
         }
 
         .table thead {
-            background-color: #343a40;
+            background-color: #000;
             color: #ffffff;
         }
 
@@ -114,7 +114,10 @@ $studentResult = $conn->query($studentQuery);
                     </tbody>
                 </table>
             </div>
+            <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+
         </div>
+        
     </div>
 </div>
 

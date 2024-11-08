@@ -20,7 +20,7 @@ $lecturer_id = $_SESSION['lecturer_id'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family:'poppins', Arial, sans-serif;
             background-color: #f4f6f9;
         }
         .container {
@@ -77,6 +77,8 @@ $lecturer_id = $_SESSION['lecturer_id'];
             </div>
             <button type="submit" class="btn btn-primary w-100">Submit Report</button>
         </form>
+        <a href="../dashboards/lecturer_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+
     </div>
 </div>
 

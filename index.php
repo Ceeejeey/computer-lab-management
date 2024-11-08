@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family:'poppins', 'Arial', sans-serif;
             background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
             display: flex;
             justify-content: center;

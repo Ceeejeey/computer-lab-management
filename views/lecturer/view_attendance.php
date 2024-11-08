@@ -81,7 +81,7 @@ if (isset($_GET['download'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
          body {
-            font-family: Arial, sans-serif;
+            font-family:'poppins', Arial, sans-serif;
             background-color: #f8f9fa;
             color: #333;
             margin: 0;
@@ -99,7 +99,7 @@ if (isset($_GET['download'])) {
 
         h2 {
             color: #343a40;
-            font-weight: 600;
+            font-weight: 400;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -277,7 +277,10 @@ if (isset($_GET['download'])) {
         <?php if (!empty($attendanceData)): ?>
             <a href="?session_id=<?php echo htmlspecialchars($session_id); ?>&batch=<?php echo htmlspecialchars($selectedBatch); ?>&download=true" class="btn btn-primary mt-3">Download Attendance Report</a>
         <?php endif; ?>
+        <a href="../dashboards/lecturer_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+
     </div>
+    
 </body>
 
 </html>

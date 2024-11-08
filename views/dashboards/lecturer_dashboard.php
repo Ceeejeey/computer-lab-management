@@ -31,10 +31,12 @@ $stmt->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lecturer Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+   <style>
         /* Custom Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'poppins', Arial, sans-serif;
             background-color: #f4f6f9;
             margin: 0;
         }
@@ -53,7 +55,7 @@ $stmt->close();
 
         .sidebar h2 {
             text-align: center;
-            font-weight: bold;
+            font-weight: 500;
             color: #ffffff;
         }
 
@@ -65,6 +67,12 @@ $stmt->close();
             margin: 5px 0;
             transition: all 0.3s ease;
         }
+
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
 
         .sidebar a:hover {
             background-color: #495057;
@@ -150,14 +158,15 @@ $stmt->close();
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>Lecturer Dashboard</h2>
-        <a href="../lecturer/add_students.php">Add Students</a>
-        <a href="../lecturer/request_lab.php">Schedule Lab Sessions</a>
-        <a href="../lecturer/lab_schedule.php">View Lab Schedule</a>
-        <a href="../lecturer/report_issue.php">Report Issue</a>
-        <a href="../lecturer/view_attendance.php">View Attendance Report</a>
-        <a href="respond_complaints.php">Respond to Complaints</a>
-    </div>
+    <h2>Lecturer Dashboard</h2>
+    <a href="../lecturer/add_students.php"><i class="fas fa-user-plus"></i> Add Students</a>
+    <a href="../lecturer/request_lab.php"><i class="fas fa-calendar-plus"></i> Schedule Lab Sessions</a>
+    <a href="../lecturer/lab_schedule.php"><i class="fas fa-calendar-alt"></i> View Lab Schedule</a>
+    <a href="../lecturer/report_issue.php"><i class="fas fa-exclamation-circle"></i> Report Issue</a>
+    <a href="../lecturer/view_attendance.php"><i class="fas fa-file-alt"></i> View Attendance Report</a>
+    <a href="respond_complaints.php"><i class="fas fa-comments"></i> Respond to Complaints</a>
+</div>
+
 
     <!-- Main Content -->
     <div class="main-content">

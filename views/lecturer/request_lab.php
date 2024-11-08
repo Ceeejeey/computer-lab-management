@@ -1,5 +1,11 @@
 <?php
-    session_start();
+session_start();
+$message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
+$messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : '';
+
+// Clear the message after displaying it
+unset($_SESSION['message']);
+unset($_SESSION['message_type']);
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +18,7 @@
     <style>
         /* Custom Styles */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'poppins','Arial', sans-serif;
             background-color: #f8f9fa;
             color: #343a40;
         }
@@ -63,6 +69,13 @@
                 margin: 20px;
             }
         }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1055;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +110,30 @@
         <a href="../dashboards/lecturer_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
     </div>
 
+    <!-- Toast Notification -->
+    <?php if (!empty($message)) : ?>
+    <div class="toast-container">
+        <div id="notificationToast" class="toast align-items-center <?= $messageType === 'success' ? 'bg-success text-white' : 'bg-danger text-white' ?>" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <?= htmlspecialchars($message) ?>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            <?php if (!empty($message)) : ?>
+                // Show the toast if there is a message
+                const toast = new bootstrap.Toast(document.getElementById("notificationToast"));
+                toast.show();
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>

@@ -14,7 +14,15 @@ if (!isset($_SESSION['student_batch']) || !isset($_SESSION['student_id'])) {
 $student_id = $_SESSION['student_id'];
 $student_batch = $_SESSION['student_batch'];
 echo "<script>console.log('Student batch: " . addslashes($student_batch) . "');</script>";
+$studentName = '';
 
+// Query to get student name
+$stmt = $conn->prepare("SELECT name FROM students WHERE id = ?");
+$stmt->bind_param("i", $student_id);
+$stmt->execute();
+$stmt->bind_result($studentName);
+$stmt->fetch();
+$stmt->close();
 $today = date("Y-m-d");
 $current_time = date("Y-m-d H:i:s");
 
@@ -164,7 +172,7 @@ $conn->close();
     <div class="main-content">
         <div class="navbar">
             <div>
-                <h4>Welcome, [Student Name]</h4>
+                <h4>Welcome, <?php echo htmlspecialchars($studentName); ?></h4>
             </div>
             <div class="profile-dropdown dropdown">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">

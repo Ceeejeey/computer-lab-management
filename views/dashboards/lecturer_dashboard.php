@@ -1,3 +1,28 @@
+<?php
+session_start();
+include '../../config/config.php';
+
+// Check if the lecturer is logged in
+if (!isset($_SESSION['lecturer_id'])) {
+    header("Location: ../../login.php"); // Redirect to login if not logged in
+    exit();
+}
+
+// Fetch the lecturer's name from the database
+$lecturerId = $_SESSION['lecturer_id']; // Assuming lecturer's ID is stored in session
+$lecturerName = '';
+
+// Query to get lecturer name
+$stmt = $conn->prepare("SELECT name FROM users WHERE id = ? AND role = 'lecturer'");
+$stmt->bind_param("i", $lecturerId);
+$stmt->execute();
+$stmt->bind_result($lecturerName);
+$stmt->fetch();
+$stmt->close();
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +36,7 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
+            margin: 0;
         }
 
         /* Sidebar Styles */
@@ -48,7 +74,7 @@
 
         /* Main Content Styles */
         .main-content {
-            margin-left: 250px;
+            margin-left: 260px;
             padding: 20px;
         }
 
@@ -85,6 +111,26 @@
             margin-right: 10px;
         }
 
+        /* Chart Container */
+        .chart-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-height: 500px;
+            /* Set a maximum height */
+            overflow-y: auto;
+            /* Add vertical scroll if content exceeds max height */
+        }
+
+        /* Chart Styling */
+        #attendanceChart {
+            max-width: 100%;
+            height: 400px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -108,10 +154,8 @@
         <a href="../lecturer/add_students.php">Add Students</a>
         <a href="../lecturer/request_lab.php">Schedule Lab Sessions</a>
         <a href="../lecturer/lab_schedule.php">View Lab Schedule</a>
-        <a href="report_issue.php">Report Issue</a>
+        <a href="../lecturer/report_issue.php">Report Issue</a>
         <a href="../lecturer/view_attendance.php">View Attendance Report</a>
-        <a href="monitor_sessions.php">Monitor User Sessions</a>
-        <a href="view_lab_status.php">View Lab Status</a>
         <a href="respond_complaints.php">Respond to Complaints</a>
     </div>
 
@@ -120,7 +164,7 @@
         <!-- Navbar -->
         <div class="navbar">
             <div>
-                <h4>Welcome, [Lecturer Name]</h4>
+                <h4>Welcome, <?php echo htmlspecialchars($lecturerName); ?></h4>
             </div>
             <div class="profile-dropdown dropdown">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -159,7 +203,6 @@
         <?php
         }
         ?>
-
         <!-- Lab Availability Card -->
         <?php
         // Query to check if labs are available
@@ -192,10 +235,68 @@
         <?php
         }
         ?>
+        <!-- Attendance Chart -->
+        <div class="chart-container">
+            <h3>Attendance Count by Session</h3>
+            <canvas id="attendanceChart"></canvas>
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('../../controllers/process_get_attendance_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    const sessionIds = data.map(item => item.session_id);
+                    const attendanceCounts = data.map(item => item.attendance_count);
+
+                    const ctx = document.getElementById('attendanceChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: sessionIds,
+                            datasets: [{
+                                label: 'Attendance Count',
+                                data: attendanceCounts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Attendance Count'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Session ID'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching attendance data:', error));
+        });
+    </script>
+
 </body>
 
 </html>

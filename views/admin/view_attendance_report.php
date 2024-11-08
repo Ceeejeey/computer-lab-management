@@ -2,50 +2,57 @@
 session_start();
 include '../../config/config.php';
 
-// Fetch lab sessions for the dropdown
-$labSessions = [];
-$stmt = $conn->prepare("SELECT id, topic, batch, start_time, end_time FROM lab_schedule ORDER BY start_time ASC");
+// Fetch all lecturers for the filter
+$lecturers = [];
+$stmt = $conn->prepare("SELECT id, name FROM users WHERE role = 'lecturer'");
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
-    $labSessions[] = $row;
+    $lecturers[] = $row;
 }
 $stmt->close();
 
-// Fetch batches for filter
+// Fetch batches for filter based on selected lecturer
 $batches = [];
-$stmt = $conn->prepare("SELECT DISTINCT batch FROM students");
-$stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_assoc()) {
-    $batches[] = $row['batch'];
-}
-$stmt->close();
-
-// Initialize selected filters and attendance data
-$selectedSessionDetails = null;
-$attendanceData = [];
-$selectedBatch = isset($_GET['batch']) ? $_GET['batch'] : '';
-$session_id = isset($_GET['session_id']) ? $_GET['session_id'] : '';
-
-// Fetch attendance data and session details based on selected filters
-if ($_SERVER['REQUEST_METHOD'] == 'GET' && $session_id && $selectedBatch) {
-    // Get session details for selected session
-    $stmt = $conn->prepare("SELECT topic, batch, start_time, end_time FROM lab_schedule WHERE id = ?");
-    $stmt->bind_param("i", $session_id);
+$selectedLecturerId = isset($_GET['lecturer_id']) ? $_GET['lecturer_id'] : '';
+if ($selectedLecturerId) {
+    $stmt = $conn->prepare("SELECT DISTINCT batch FROM lab_schedule WHERE lecturer_id = ?");
+    $stmt->bind_param("i", $selectedLecturerId);
     $stmt->execute();
     $result = $stmt->get_result();
-    $selectedSessionDetails = $result->fetch_assoc();
+    while ($row = $result->fetch_assoc()) {
+        $batches[] = $row['batch'];
+    }
     $stmt->close();
+}
 
-    // Fetch attendance data for the selected session and batch
+// Fetch sessions for the filter based on selected batch
+$sessions = [];
+$selectedBatch = isset($_GET['batch']) ? $_GET['batch'] : '';
+if ($selectedBatch) {
+    $stmt = $conn->prepare("SELECT id, topic, start_time, end_time FROM lab_schedule WHERE batch = ? AND lecturer_id = ?");
+    $stmt->bind_param("si", $selectedBatch, $selectedLecturerId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $sessions[] = $row;
+    }
+    $stmt->close();
+}
+
+// Initialize selected filters and attendance data
+$attendanceData = [];
+$selectedSessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '';
+
+// Fetch attendance data based on selected filters
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && $selectedSessionId) {
     $query = "SELECT attendance.student_id, students.name, attendance.date, attendance.status
               FROM attendance
               JOIN students ON attendance.student_id = students.id
-              WHERE attendance.lab_session_id = ? AND students.batch = ?";
+              WHERE attendance.lab_session_id = ?";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("is", $session_id, $selectedBatch);
+    $stmt->bind_param("i", $selectedSessionId);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -80,7 +87,7 @@ if (isset($_GET['download'])) {
     <title>Attendance Report</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-         body {
+        body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
             color: #333;
@@ -89,7 +96,7 @@ if (isset($_GET['download'])) {
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 50px auto;
             padding: 20px;
             background-color: #ffffff;
@@ -104,11 +111,6 @@ if (isset($_GET['download'])) {
             margin-bottom: 20px;
         }
 
-        form label {
-            font-weight: 500;
-            color: #495057;
-        }
-
         .form-select {
             width: 100%;
             max-width: 300px;
@@ -118,15 +120,19 @@ if (isset($_GET['download'])) {
             border: 1px solid #ced4da;
         }
 
-        h5 {
-            color: #495057;
-            font-weight: 600;
-            margin-top: 20px;
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
 
-        p {
-            margin: 5px 0;
-            color: #6c757d;
+        .btn-primary:hover {
+            background-color: #0056b3;
+            color: white;
         }
 
         .table {
@@ -163,35 +169,6 @@ if (isset($_GET['download'])) {
             background-color: #e9ecef;
         }
 
-        .text-center {
-            font-style: italic;
-            color: #6c757d;
-            padding: 20px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-            color: white;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            color: white;
-        }
-
-        select:focus,
-        input[type="text"]:focus,
-        input[type="date"]:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
-        }
-
         @media (max-width: 576px) {
             .container {
                 padding: 15px;
@@ -200,10 +177,6 @@ if (isset($_GET['download'])) {
             .table th,
             .table td {
                 padding: 8px;
-            }
-
-            .form-select {
-                max-width: 100%;
             }
         }
     </style>
@@ -214,19 +187,19 @@ if (isset($_GET['download'])) {
         <h2>Attendance Report</h2>
         <form method="GET" class="mb-4">
             <div class="row">
-                <div class="col-md-6">
-                    <label for="session_id">Lab Session:</label>
-                    <select name="session_id" id="session_id" class="form-select" onchange="this.form.submit()">
-                        <option value="">Select Session</option>
-                        <?php foreach ($labSessions as $session): ?>
-                            <option value="<?php echo htmlspecialchars($session['id']); ?>" <?php echo isset($session_id) && $session_id == $session['id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($session['topic'] . " (Batch " . $session['batch'] . ")"); ?>
+                <div class="col-md-4">
+                    <label for="lecturer_id">Lecturer:</label>
+                    <select name="lecturer_id" id="lecturer_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">Select Lecturer</option>
+                        <?php foreach ($lecturers as $lecturer): ?>
+                            <option value="<?php echo htmlspecialchars($lecturer['id']); ?>" <?php echo isset($selectedLecturerId) && $selectedLecturerId == $lecturer['id'] ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($lecturer['name']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="batch">Batch:</label>
                     <select name="batch" id="batch" class="form-select" onchange="this.form.submit()">
                         <option value="">Select Batch</option>
@@ -237,27 +210,34 @@ if (isset($_GET['download'])) {
                         <?php endforeach; ?>
                     </select>
                 </div>
+
+                <div class="col-md-4">
+                    <label for="session_id">Session:</label>
+                    <select name="session_id" id="session_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">Select Session</option>
+                        <?php foreach ($sessions as $session): ?>
+                            <option value="<?php echo htmlspecialchars($session['id']); ?>" <?php echo isset($selectedSessionId) && $selectedSessionId == $session['id'] ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($session['topic'] . " (" . date('Y-m-d H:i', strtotime($session['start_time'])) . " - " . date('H:i', strtotime($session['end_time'])) . ")"); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
         </form>
 
-        <?php if ($selectedSessionDetails): ?>
-            <h5>Session Details:</h5>
-            <p>Topic: <?php echo htmlspecialchars($selectedSessionDetails['topic']); ?></p>
-            <p>Batch: <?php echo htmlspecialchars($selectedSessionDetails['batch']); ?></p>
-            <p>Date and Time: <?php echo date('Y-m-d H:i', strtotime($selectedSessionDetails['start_time'])) . ' - ' . date('H:i', strtotime($selectedSessionDetails['end_time'])); ?></p>
-        <?php endif; ?>
+        <?php if (!empty($attendanceData)): ?>
+            <a href="?lecturer_id=<?php echo htmlspecialchars($selectedLecturerId); ?>&batch=<?php echo htmlspecialchars($selectedBatch); ?>&session_id=<?php echo htmlspecialchars($selectedSessionId); ?>&download=true" class="btn btn-primary mt-3">Download Attendance Report</a>
 
-        <table class="table table-striped mt-3">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Name</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($attendanceData)): ?>
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <?php foreach ($attendanceData as $data): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($data['student_id']); ?></td>
@@ -266,18 +246,11 @@ if (isset($_GET['download'])) {
                             <td><?php echo htmlspecialchars($data['status']); ?></td>
                         </tr>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="4" class="text-center">No attendance records found for this session and batch.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-
-        <?php if (!empty($attendanceData)): ?>
-            <a href="?session_id=<?php echo htmlspecialchars($session_id); ?>&batch=<?php echo htmlspecialchars($selectedBatch); ?>&download=true" class="btn btn-primary mt-3">Download Attendance Report</a>
+                </tbody>
+            </table>
         <?php endif; ?>
     </div>
-</body>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

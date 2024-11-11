@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family:'poppins', Arial, sans-serif;
+            font-family: 'poppins', Arial, sans-serif;
             background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
         }
 
@@ -34,20 +34,22 @@
         .btn-custom:hover {
             background-color: #0056b3;
         }
-       
     </style>
 </head>
 
 <body>
     <div class="container">
-    
+
         <h2>Add Student</h2>
         <form action="../../controllers/process_add_student.php" method="POST">
             <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
             </div>
-
+            <div class="mb-3">
+                <label for="registration_number" class="form-label">Registration Number</label>
+                <input type="text" class="form-control" id="registration_number" name="registration_number" placeholder="EUSL/TC/IS/...">
+            </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
                 <input type="email" class="form-control" id="email" name="email" required>

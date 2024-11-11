@@ -164,7 +164,7 @@ $stmt->close();
     <a href="../lecturer/lab_schedule.php"><i class="fas fa-calendar-alt"></i> View Lab Schedule</a>
     <a href="../lecturer/report_issue.php"><i class="fas fa-exclamation-circle"></i> Report Issue</a>
     <a href="../lecturer/view_attendance.php"><i class="fas fa-file-alt"></i> View Attendance Report</a>
-    <a href="respond_complaints.php"><i class="fas fa-comments"></i> Respond to Complaints</a>
+    
 </div>
 
 
@@ -180,7 +180,7 @@ $stmt->close();
                     Profile
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="profile.php">Go to Profile</a></li>
+                    <li><a class="dropdown-item" href="../../includes/change_password.php">Change Password</a></li>
                     <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
                 </ul>
             </div>
@@ -215,7 +215,12 @@ $stmt->close();
         <!-- Lab Availability Card -->
         <?php
         // Query to check if labs are available
-        $lab_query = "SELECT * FROM lab_schedule WHERE start_time > NOW() ORDER BY start_time LIMIT 1";
+        $lab_query = "SELECT * 
+                FROM lab_schedule 
+                WHERE NOW() BETWEEN start_time AND end_time 
+                ORDER BY start_time 
+                LIMIT 1;
+                ";
         $lab_result = mysqli_query($conn, $lab_query);
 
         if (mysqli_num_rows($lab_result) == 0) {
@@ -234,8 +239,9 @@ $stmt->close();
                 <div class="card-body">
                     <h5 class="card-title text-danger"><i class="icon bi bi-exclamation-circle"></i>Lab Unavailable</h5>
                     <p class="card-text">
-                        <strong>Next Scheduled Session:</strong> <?php echo date("d M Y, H:i", strtotime($lab_schedule['start_time'])); ?><br>
-                        <strong>Topic:</strong> <?php echo $lab_schedule['lecture_topic']; ?><br>
+                        <strong>Session Start time:</strong> <?php echo date("d M Y, H:i", strtotime($lab_schedule['start_time'])); ?><br>
+                        <strong>End Time:</strong> <?php echo date("d M Y, H:i", strtotime($lab_schedule['end_time'])); ?><br>
+                        <strong>Session Name:</strong> <?php echo $lab_schedule['topic']; ?><br>
                         <strong>Batch:</strong> <?php echo $lab_schedule['batch']; ?>
                     </p>
                     <span class="badge bg-danger">Status: Scheduled</span>

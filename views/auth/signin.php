@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Password correct, set session variables
             $_SESSION['user_id'] = $id;
             $_SESSION['name'] = $name;
-
+            $_SESSION['role'] = $role;
             // Set lecturer_id session variable if role is lecturer
             if ($role === 'lecturer') {
                 $_SESSION['lecturer_id'] = $id; // Set lecturer_id for lecturer role

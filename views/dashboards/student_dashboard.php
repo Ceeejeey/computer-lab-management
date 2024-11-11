@@ -81,6 +81,11 @@ $conn->close();
         body {
             font-family: 'poppins', Arial, sans-serif;
             background-color: #f4f6f9;
+            background-image: url('../../images/new1.jpeg');
+            background-size: cover;           
+            background-position: center;      
+            background-repeat: no-repeat;    
+            background-attachment: fixed; 
         }
 
         .sidebar {
@@ -184,7 +189,7 @@ $conn->close();
                     Profile
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="profile.php">Go to Profile</a></li>
+                    <li><a class="dropdown-item" href="../student/change_password.php">Change Password</a></li>
                     <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
                 </ul>
             </div>

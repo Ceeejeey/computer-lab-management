@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family:'poppins', 'Arial', sans-serif;
+            font-family: 'poppins', 'Arial', sans-serif;
             background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
             display: flex;
             justify-content: center;
@@ -24,8 +24,8 @@
         .wrapper {
             display: flex;
             width: 100%;
-            max-width: 1000px; 
-            height: 600px; 
+            max-width: 1000px;
+            height: 600px;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -34,7 +34,7 @@
 
         .image-section {
             flex: 1;
-            background: url('./images/lab.jpg') no-repeat center center/cover; 
+            background: url('./images/main.jpeg') no-repeat center center/cover;
         }
 
         .container {
@@ -132,7 +132,7 @@
 <body>
 
     <div class="wrapper">
-        <div class="image-section"></div> 
+        <div class="image-section"></div>
 
         <div class="container">
             <header>
@@ -151,7 +151,10 @@
 
             <footer>
                 &copy; 2024 Computer Laboratory Management System. All rights reserved.
+                <br>
+                <a href="./about_us.php" style="color: #007bff; text-decoration: none; font-size: 0.9rem;">About Us</a>
             </footer>
+
         </div>
     </div>
 

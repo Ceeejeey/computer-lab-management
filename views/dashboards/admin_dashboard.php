@@ -193,7 +193,7 @@ $conn->close();
                     Profile
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="profile.php">Go to Profile</a></li>
+                    <li><a class="dropdown-item" href="../../includes/change_password.php">Change Password</a></li>
                     <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
                 </ul>
             </div>

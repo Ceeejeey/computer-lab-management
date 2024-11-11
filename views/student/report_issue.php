@@ -99,7 +99,7 @@ $student_id = $_SESSION['student_id'];
             
             <div class="mb-4">
                 <label for="computerID" class="form-label">Computer ID</label>
-                <input type="text" class="form-control" id="computerID" name="computer_id" placeholder="e.g., PC-12" required>
+                <input type="text" class="form-control" id="computerID" name="computer_id" placeholder="e.g. 12" required>
             </div>
             <div class="mb-4">
                 <label for="description" class="form-label">Issue Description</label>

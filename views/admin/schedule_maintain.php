@@ -8,7 +8,7 @@
     <style>
         body {
             background-color: #f8f9fa;
-            font-family:'poppins', Arial, sans-serif;
+            font-family: 'Poppins', Arial, sans-serif;
         }
         .container {
             max-width: 600px;
@@ -45,9 +45,25 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
-        .form-text {
-            color: #6c757d;
+        .btn-secondary {
+            width: 100%;
+        }
+        .status-badge {
             font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .badge-ongoing {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .badge-completed {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .badge-pending {
+            background-color: #dc3545;
+            color: #fff;
         }
     </style>
 </head>
@@ -70,8 +86,56 @@
             </div>
             <button type="submit" class="btn btn-primary">Schedule Maintenance</button>
         </form>
-        <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+        
 
+        <!-- List of Scheduled Maintenance with Status Update Option -->
+        <div class="mt-5">
+            <h3>Maintenance Schedules</h3>
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Sample PHP code to fetch maintenance records
+                    include '../../config/config.php';
+                    $sql = "SELECT maintenance_id, description, start_time, end_time, status FROM maintenance";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['description']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['start_time']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['end_time']) . "</td>";
+                            echo "<td><span class='status-badge " . ($row['status'] == 'Completed' ? 'badge-completed' : ($row['status'] == 'Ongoing' ? 'badge-ongoing' : 'badge-pending')) . "'>" . $row['status'] . "</span></td>";
+                            echo "<td>
+                                <form action='../../controllers/admin_update_maintenance_status.php' method='POST' style='display: inline;'>
+                                    <input type='hidden' name='id' value='" . $row['maintenance_id'] . "'>
+                                    <select name='status' class='form-select form-select-sm mb-2' onchange='this.form.submit()'>
+
+                                        <option value='Ongoing'" . ($row['status'] == 'Ongoing' ? ' selected' : '') . ">Ongoing</option>
+                                        <option value='Completed'" . ($row['status'] == 'Completed' ? ' selected' : '') . ">Completed</option>
+                                    </select>
+                                </form>
+                            </td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5' class='text-center'>No scheduled maintenance</td></tr>";
+                    }
+                    $conn->close();
+                    ?>
+                </tbody>
+            </table>
+            <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary mt-3">Go Back to Dashboard</a>
+        </div>
     </div>
 </body>
 </html>

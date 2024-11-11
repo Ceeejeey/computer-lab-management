@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("iisssss", $student_id, $lecturer_id, $computer_id, $issue_type, $description, $priority, $created_at);
     if ($stmt->execute()) {
         $_SESSION['message'] = "Issue reported successfully!";
-        $redirect_page = ($user_type === 'Student') ? "../views/dashboards/student_dashboard.php" : "./views/dashboard/lecturer_dashboard.php";
+        $redirect_page = ($user_type === 'Student') ? "../views/dashboards/student_dashboard.php" : "../views/dashboards/lecturer_dashboard.php";
         header("Location: $redirect_page");
         exit;
     } else {

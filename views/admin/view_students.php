@@ -8,7 +8,7 @@ $batchResult = $conn->query($batchQuery);
 
 // Fetch students based on selected batch
 $selectedBatch = isset($_GET['batch']) ? $_GET['batch'] : '';
-$studentQuery = "SELECT id, name, email, batch, created_at FROM students";
+$studentQuery = "SELECT reg_no, name, email, batch, created_at FROM students";
 if ($selectedBatch) {
     $studentQuery .= " WHERE batch = '$selectedBatch'";
 }
@@ -100,7 +100,7 @@ $studentResult = $conn->query($studentQuery);
                         if ($studentResult->num_rows > 0) {
                             while ($row = $studentResult->fetch_assoc()) {
                                 echo "<tr>
-                                    <td>{$row['id']}</td>
+                                    <td>{$row['reg_no']}</td>
                                     <td>{$row['name']}</td>
                                     <td>{$row['email']}</td>
                                     <td>{$row['batch']}</td>

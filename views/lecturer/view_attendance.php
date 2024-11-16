@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && $session_id && $selectedBatch) {
     $stmt->close();
 
     // Fetch attendance data for the selected session and batch
-    $query = "SELECT attendance.student_id, students.name, attendance.date, attendance.status
+    $query = "SELECT students.reg_no, students.name, attendance.date, attendance.status
               FROM attendance
               JOIN students ON attendance.student_id = students.id
               WHERE attendance.lab_session_id = ? AND students.batch = ?";
@@ -66,7 +66,7 @@ if (isset($_GET['download'])) {
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="attendance_report.csv"');
         $output = fopen('php://output', 'w');
-        fputcsv($output, ['Student ID', 'Name', 'Date', 'Status']);
+        fputcsv($output, ['Reg No:', 'Name', 'Date', 'Status']);
         foreach ($attendanceData as $data) {
             fputcsv($output, $data);
         }
@@ -264,7 +264,7 @@ if (isset($_GET['download'])) {
             <table class="table table-striped mt-3">
                 <thead>
                     <tr>
-                        <th>Student ID</th>
+                        <th>Reg No:</th>
                         <th>Name</th>
                         <th>Date</th>
                         <th>Status</th>
@@ -273,7 +273,7 @@ if (isset($_GET['download'])) {
                 <tbody>
                     <?php foreach ($attendanceData as $data): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($data['student_id']); ?></td>
+                            <td><?php echo htmlspecialchars($data['reg_no']); ?></td>
                             <td><?php echo htmlspecialchars($data['name']); ?></td>
                             <td><?php echo htmlspecialchars($data['date']); ?></td>
                             <td><?php echo htmlspecialchars($data['status']); ?></td>

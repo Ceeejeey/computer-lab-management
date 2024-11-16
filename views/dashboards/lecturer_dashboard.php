@@ -163,8 +163,9 @@ $stmt->close();
     <a href="../lecturer/modify_students.php"><i class="fas fa-users"></i> Student Management</a> 
     <a href="../lecturer/request_lab.php"><i class="fas fa-calendar-plus"></i> Schedule Lab Sessions</a>
     <a href="../lecturer/lab_schedule.php"><i class="fas fa-calendar-alt"></i> View Lab Schedule</a>
-    <a href="../lecturer/report_issue.php"><i class="fas fa-exclamation-circle"></i> Report Issue</a>
     <a href="../lecturer/view_attendance.php"><i class="fas fa-file-alt"></i> View Attendance Report</a>
+    <a href="../lecturer/report_issue.php"><i class="fas fa-exclamation-circle"></i> Report Issue</a>
+    <a href="../lecturer/check_complaints.php"><i class="fas fa-question-circle"></i> Check Issue Status</a>
 
 </div>
 

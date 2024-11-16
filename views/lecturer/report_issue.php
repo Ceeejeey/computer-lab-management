@@ -20,29 +20,107 @@ $lecturer_id = $_SESSION['lecturer_id'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family:'poppins', Arial, sans-serif;
-            background-color: #f4f6f9;
-        }
-        .container {
-            max-width: 600px;
-            margin-top: 40px;
-        }
-        .form-card {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
+    font-family: 'Poppins', Arial, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin-top: 40px;
+}
+
+.form-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+h2 {
+    font-weight: bold;
+    color: #4a4a4a;
+}
+
+.form-select, .form-control {
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.toast {
+    max-width: 350px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.toast-body {
+    font-size: 1rem;
+    padding: 10px;
+}
+
+.toast-header {
+    font-weight: bold;
+}
+
+.position-fixed {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
     </style>
 </head>
 <body>
+<?php
+if (isset($_SESSION['toast'])) {
+    $toast = $_SESSION['toast'];
+    $toastType = $toast['type'] === 'success' ? 'bg-success text-white' : 'bg-danger text-white';
+    echo <<<HTML
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+    <div class="toast $toastType" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Notification</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {$toast['message']}
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastElement = document.querySelector('.toast');
+        var toast = new bootstrap.Toast(toastElement);
+        toast.show();
+    });
+</script>
+HTML;
+    unset($_SESSION['toast']);
+}
+?>
+
 <div class="container">
     <h2 class="text-center mb-4">Report an Issue</h2>
     <div class="form-card">
@@ -78,7 +156,6 @@ $lecturer_id = $_SESSION['lecturer_id'];
             <button type="submit" class="btn btn-primary w-100">Submit Report</button>
         </form>
         <a href="../dashboards/lecturer_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
-
     </div>
 </div>
 

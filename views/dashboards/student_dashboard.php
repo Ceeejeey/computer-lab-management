@@ -44,21 +44,28 @@ if ($stmt->execute()) {
 
     while ($row = $result->fetch_assoc()) {
         $startTime = new DateTime($row['start_time']);
-        // Removed redundant assignment
         $endTime = new DateTime($row['end_time']);
         $currentTime = new DateTime($current_time);
 
+        // Assigning status and can_attend
         if ($currentTime < $startTime) {
             $row['status'] = 'Not Yet Started';
             $row['can_attend'] = false;
         } elseif ($currentTime > $endTime) {
             $row['status'] = 'Time Passed';
+            $row['can_attend'] = false;
         } else {
             $row['status'] = 'Attend';
             $row['can_attend'] = true;
         }
 
+        // Add the row to the schedules array
         $schedules[] = $row;
+
+        // Log the details for debugging
+        echo "<script>console.log('Current Time: " . addslashes($current_time) . "');</script>";
+        echo "<script>console.log('Start Time: " . addslashes($row['start_time']) . "');</script>";
+        echo "<script>console.log('Can Attend: " . ($row['can_attend'] ? 'Yes' : 'No') . "');</script>";
     }
 } else {
     die("Failed to execute statement: " . $stmt->error);
@@ -66,6 +73,7 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -82,10 +90,10 @@ $conn->close();
             font-family: 'poppins', Arial, sans-serif;
             background-color: #f4f6f9;
             background-image: url('../../images/new1.jpeg');
-            background-size: cover;           
-            background-position: center;      
-            background-repeat: no-repeat;    
-            background-attachment: fixed; 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
         .sidebar {
@@ -208,7 +216,7 @@ $conn->close();
                     </div>
                 <?php else: ?>
                     <?php foreach ($schedules as $schedule): ?>
-                        <?php $canAttend = isset($schedule['can_attend']) ? true : false; ?>
+                        <?php $canAttend = isset($schedule['can_attend']) ? $schedule['can_attend'] : false; ?>
                         <div class="col-lg-6">
                             <div class="card shadow-sm <?php echo $canAttend ? 'bg-primary text-white' : 'bg-secondary text-white'; ?>">
                                 <div class="card-body">
@@ -223,13 +231,11 @@ $conn->close();
                                         <?php endif; ?>>
                                         <?php echo $canAttend ? 'Attend' : 'Cannot Attend'; ?>
                                     </button>
-
-
-
                                 </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
+
                 <?php endif; ?>
             </div>
         </div>

@@ -2,9 +2,22 @@
 session_start();
 include('../../config/config.php');
 
+// Get unique batch values for filtering
+$batch_sql = "SELECT DISTINCT batch FROM students";
+$batch_result = mysqli_query($conn, $batch_sql);
+
+// Default filter condition
+$batch_filter = isset($_GET['batch']) ? $_GET['batch'] : '';
+
+// SQL query to filter students by batch
 $sql = "SELECT * FROM students";
+if ($batch_filter) {
+    $sql .= " WHERE batch = '" . mysqli_real_escape_string($conn, $batch_filter) . "'";
+}
+
 $result = mysqli_query($conn, $sql);
 
+// Handle successful deletion
 if (isset($_GET['delete_success']) && $_GET['delete_success'] == 'true') {
     $delete_message = "Student deleted successfully!";
 }
@@ -107,13 +120,28 @@ if (isset($_GET['delete_success']) && $_GET['delete_success'] == 'true') {
             </div>
         <?php endif; ?>
 
+        <!-- Batch Filter Form -->
+        <form method="GET" action="" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <select name="batch" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Batches</option>
+                        <?php while ($batch_row = mysqli_fetch_assoc($batch_result)): ?>
+                            <option value="<?php echo $batch_row['batch']; ?>" <?php echo ($batch_filter == $batch_row['batch']) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($batch_row['batch']); ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+            </div>
+        </form>
+
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Reg No:</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Registration Number</th>
                     <th>Batch</th>
                     <th>Actions</th>
                 </tr>
@@ -123,19 +151,17 @@ if (isset($_GET['delete_success']) && $_GET['delete_success'] == 'true') {
                 if (mysqli_num_rows($result) > 0) {
                     while ($row = mysqli_fetch_assoc($result)) {
                         echo "<tr>
-                            <td>" . $row['id'] . "</td>
+                            <td>" . $row['reg_no'] . "</td>
                             <td>" . $row['name'] . "</td>
                             <td>" . $row['email'] . "</td>
-                            <td>" . $row['registration_number'] . "</td>
                             <td>" . $row['batch'] . "</td>
                             <td>
-                                
                                 <a href='../../controllers/staff_delete_students.php?id=" . $row['id'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure you want to delete this student?\");'>Delete</a>
                             </td>
                         </tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='6'>No students found</td></tr>";
+                    echo "<tr><td colspan='5'>No students found</td></tr>";
                 }
                 ?>
             </tbody>

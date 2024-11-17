@@ -1,7 +1,7 @@
 <?php
 include '../../config/config.php';
 
-$sql = "SELECT id, name FROM users"; 
+$sql = "SELECT id, name FROM users WHERE role = 'lecturer'"; 
 $result = $conn->query($sql);
 
 $lecturers = [];

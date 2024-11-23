@@ -173,7 +173,7 @@ $conn->close();
         <h2>Admin Dashboard</h2>
         <a href="../admin/view_lab_request.php"><i class="fas fa-check-circle"></i> Approve Lab Requests</a>
         <a href="../admin/view_students.php"><i class="fas fa-user-graduate"></i> Manage Students</a>
-        <a href="../admin/view_lectureres.php"><i class="fas fa-chalkboard-teacher"></i> Manage Lecturers</a>
+        <a href="../admin/view_lecturers.php"><i class="fas fa-chalkboard-teacher"></i> Manage Lecturers</a>
         <a href="../admin/view_attendance_report.php"><i class="fas fa-file-alt"></i> View Attendance Report</a>
         <a href="../admin/schedule_maintain.php"><i class="fas fa-calendar-alt"></i> Schedule Maintenance</a>
         <a href="../admin/review_issues.php"><i class="fas fa-comment-dots"></i> Feedback for Complaints</a>

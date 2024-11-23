@@ -3,7 +3,7 @@
 include '../../config/config.php';
 
 // Fetch lecturers' data
-$lecturerQuery = "SELECT id, name, email  FROM users WHERE role = 'lecturer'"; // assuming 'users' table contains lecturers
+$lecturerQuery = "SELECT id, name, email FROM users WHERE role = 'lecturer'"; // assuming 'users' table contains lecturers
 $lecturerResult = $conn->query($lecturerQuery);
 ?>
 
@@ -64,7 +64,7 @@ $lecturerResult = $conn->query($lecturerQuery);
                             <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,18 +76,22 @@ $lecturerResult = $conn->query($lecturerQuery);
                                     <td>{$row['id']}</td>
                                     <td>{$row['name']}</td>
                                     <td>{$row['email']}</td>
-                                    
+                                    <td>
+                                        <form action='../../controllers/delete_lecturer.php' method='POST' style='display:inline;'>
+                                            <input type='hidden' name='lecturer_id' value='{$row['id']}'>
+                                            <button type='submit' class='btn btn-danger btn-sm'>Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='3' class='text-center'>No lecturers found</td></tr>";
+                            echo "<tr><td colspan='4' class='text-center'>No lecturers found</td></tr>";
                         }
                         ?>
                     </tbody>
                 </table>
             </div>
             <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
-
         </div>
     </div>
 </div>

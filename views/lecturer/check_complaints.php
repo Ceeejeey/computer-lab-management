@@ -25,7 +25,7 @@
             font-weight: bold;
         }
 
-        .table-striped{
+        .table-striped {
             border-radius: 8px;
         }
         .table-striped > tbody > tr:nth-of-type(odd) {
@@ -72,6 +72,7 @@
                         <th>Description</th>
                         <th>Priority</th>
                         <th>Reported At</th>
+                        <th>Action Taken By Admin</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -81,13 +82,13 @@
             </table>
             <p id="noIssuesMessage" class="no-issues-message">No issues reported yet.</p>
         </div>
-        <a href="../dashboards/lecturer_dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+        <a href="../dashboards/lecturer_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
 
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            fetch("../../controllers/fetch_lecturer_issues.php")
+            fetch("../../controllers/fetch_student_issues.php")
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.getElementById("issueTableBody");
@@ -111,6 +112,9 @@
                                 statusBadge = '<span class="badge bg-secondary">Unknown</span>';
                             }
 
+                            // Add a fallback for `action_taken` if it's null
+                            const actionTaken = issue.action_taken ? issue.action_taken : "Not yet reviewed";
+
                             row.innerHTML = `
                                 <td>${issue.issue_id}</td>
                                 <td>${issue.computer_id || 'N/A'}</td>
@@ -118,6 +122,7 @@
                                 <td>${issue.description}</td>
                                 <td>${issue.priority}</td>
                                 <td>${new Date(issue.created_at).toLocaleDateString()}</td>
+                                <td>${actionTaken}</td>
                                 <td>${statusBadge}</td>
                             `;
                             tableBody.appendChild(row);

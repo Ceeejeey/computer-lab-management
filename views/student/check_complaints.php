@@ -25,7 +25,7 @@
             font-weight: bold;
         }
 
-        .table-striped{
+        .table-striped {
             border-radius: 8px;
         }
         .table-striped > tbody > tr:nth-of-type(odd) {
@@ -73,6 +73,7 @@
                         <th>Description</th>
                         <th>Priority</th>
                         <th>Reported At</th>
+                        <th>Action Taken By Admin</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -110,6 +111,9 @@
                                 statusBadge = '<span class="badge bg-secondary">Unknown</span>';
                             }
 
+                            // Add a fallback for `action_taken` if it's null
+                            const actionTaken = issue.action_taken ? issue.action_taken : "Not yet reviewed";
+
                             row.innerHTML = `
                                 <td>${issue.issue_id}</td>
                                 <td>${issue.computer_id || 'N/A'}</td>
@@ -117,6 +121,7 @@
                                 <td>${issue.description}</td>
                                 <td>${issue.priority}</td>
                                 <td>${new Date(issue.created_at).toLocaleDateString()}</td>
+                                <td>${actionTaken}</td>
                                 <td>${statusBadge}</td>
                             `;
                             tableBody.appendChild(row);

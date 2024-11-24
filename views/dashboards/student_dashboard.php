@@ -183,7 +183,7 @@ $conn->close();
         <h2>Student Dashboard</h2>
         <a href="../student/view_attendance.php"><i class="fas fa-calendar-check"></i> View Attendance</a>
         <a href="../student/report_issue.php"><i class="fas fa-exclamation-triangle"></i> Report Issue</a>
-        <a href="../student/check_complaints.php"><i class="fas fa-question-circle"></i> Check Complaints</a>
+        <a href="../student/check_complaints.php"><i class="fas fa-question-circle"></i> Check Issue Status</a>
     </div>
 
 

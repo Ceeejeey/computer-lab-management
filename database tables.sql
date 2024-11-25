@@ -32,15 +32,22 @@ CREATE TABLE `ongoing_issues` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `maintenance` (
-  `maintenance_id` int(11) NOT NULL AUTO_INCREMENT,
-  `start_time` datetime NOT NULL,
-  `end_time` datetime NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `status` enum('Scheduled','Ongoing','Completed') DEFAULT 'Scheduled',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`maintenance_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `maintenance_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `start_time` DATETIME NOT NULL,
+  `end_time` DATETIME NOT NULL,
+  `description` VARCHAR(255) DEFAULT NULL,
+  `status` ENUM('Scheduled', 'Ongoing', 'Completed') DEFAULT 'Scheduled',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  `admin_id` INT NOT NULL,
+  PRIMARY KEY (`maintenance_id`),
+  CONSTRAINT `fk_maintenance_admin`
+    FOREIGN KEY (`admin_id`) 
+    REFERENCES `users`(`id`) 
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 CREATE TABLE `lab_schedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

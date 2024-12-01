@@ -88,7 +88,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            fetch("../../controllers/fetch_student_issues.php")
+            fetch("../../controllers/fetch_lecturer_issues.php")
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.getElementById("issueTableBody");

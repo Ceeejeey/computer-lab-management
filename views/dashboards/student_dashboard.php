@@ -4,6 +4,7 @@ include '../../config/config.php';
 
 date_default_timezone_set('Asia/Colombo');
 
+// For development, you can keep error reporting, but disable in production
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -22,7 +23,11 @@ $stmt->bind_param("i", $student_id);
 $stmt->execute();
 $stmt->bind_result($studentName);
 $stmt->fetch();
+
+// Debug output
+echo "<script>console.log('Student Name: " . addslashes($studentName) . "');</script>";
 $stmt->close();
+
 $today = date("Y-m-d");
 $current_time = date("Y-m-d H:i:s");
 
@@ -71,9 +76,36 @@ if ($stmt->execute()) {
     die("Failed to execute statement: " . $stmt->error);
 }
 
-$stmt->close();
-$conn->close();
+$notifications = [];
+$notificationCount = 0;
+$hasNotifications = false;
 
+// Query to fetch unread notifications
+$notificationQuery = "SELECT title, message, created_at, is_read 
+                      FROM student_notifications 
+                      WHERE student_id = ? AND is_read = 0
+                      ORDER BY created_at DESC";
+
+$stmt = $conn->prepare($notificationQuery);
+$stmt->bind_param("i", $student_id); // Use $student_id instead of $studentId
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_assoc()) {
+    $notifications[] = $row;
+}
+
+// Update notification count and flag
+if (!empty($notifications)) {
+    $notificationCount = count($notifications);
+    $hasNotifications = true;
+}
+
+// To hide the notification badge if no new notifications
+$hasNotifications = $notificationCount > 0;
+
+$stmt->close(); // Close statement after all queries
+$conn->close(); // Close connection
 ?>
 
 <!DOCTYPE html>
@@ -192,14 +224,49 @@ $conn->close();
             <div>
                 <h4>Welcome, <?php echo htmlspecialchars($studentName); ?></h4>
             </div>
-            <div class="profile-dropdown dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    Profile
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="../student/change_password.php">Change Password</a></li>
-                    <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
-                </ul>
+            <!-- Student Notification Bell -->
+            <div class="d-flex align-items-center">
+                <div class="dropdown me-3">
+                    <button
+                        class="btn btn-outline-secondary position-relative"
+                        type="button"
+                        id="studentNotificationBell"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        onclick="markStudentNotificationsAsRead()">
+                        <i class="fas fa-bell"></i>
+                        <!-- Display the badge for new notifications -->
+                        <?php if ($hasNotifications): ?>
+                            <span
+                                id="studentNotificationBadge"
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <?php echo $notificationCount; ?>
+                            </span>
+                        <?php endif; ?>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="studentNotificationBell">
+                        <?php if (!empty($notifications)): ?>
+                            <?php foreach ($notifications as $notification): ?>
+                                <li class="dropdown-item">
+                                    <strong><?php echo htmlspecialchars($notification['title']); ?></strong><br>
+                                    <small><?php echo htmlspecialchars($notification['message']); ?></small><br>
+                                    <small class="text-muted"><?php echo htmlspecialchars($notification['created_at']); ?></small>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li class="dropdown-item text-center text-muted">No Notifications</li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+                <div class="profile-dropdown dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Profile
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="../student/change_password.php">Change Password</a></li>
+                        <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -260,6 +327,29 @@ $conn->close();
                     })
                     .catch(error => console.error('Error:', error));
             }
+        }
+    </script>
+    <script>
+        function markStudentNotificationsAsRead() {
+            fetch('../../controllers/student_mark_notifications_as_read.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Hide the badge
+                        const badge = document.getElementById('studentNotificationBadge');
+                        if (badge) {
+                            badge.style.display = 'none';
+                        }
+                    } else {
+                        console.error('Failed to mark notifications as read.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         }
     </script>
 </body>

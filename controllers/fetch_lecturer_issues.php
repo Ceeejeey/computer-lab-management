@@ -1,10 +1,17 @@
 <?php
 session_start();
-include '../config/config.php'; // Adjust to your DB connection file
+include '../config/config.php'; // Database connection
 
-$student_id = $_SESSION['lecturer_id']; // Assumes student is logged in
+// Ensure the session variable is correctly set
+if (!isset($_SESSION['lecturer_id'])) {
+    http_response_code(403); // Forbidden
+    echo json_encode(['error' => 'Unauthorized access']);
+    exit();
+}
 
-// Query to fetch issues along with the action taken by the admin from the ongoing_issue table
+$lecturer_id = $_SESSION['lecturer_id']; // Correct variable assignment
+
+// Query to fetch issues along with action taken
 $sql = "
    SELECT 
         issues.issue_id, 
@@ -23,6 +30,13 @@ $sql = "
 ";
 
 $stmt = $conn->prepare($sql);
+
+if (!$stmt) {
+    http_response_code(500); // Internal Server Error
+    echo json_encode(['error' => 'Failed to prepare statement']);
+    exit();
+}
+
 $stmt->bind_param("i", $lecturer_id);
 $stmt->execute();
 $result = $stmt->get_result();

@@ -41,7 +41,6 @@ CREATE TABLE `maintenance` (
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   `admin_id` INT NOT NULL,
   PRIMARY KEY (`maintenance_id`),
-  CONSTRAINT `fk_maintenance_admin`
     FOREIGN KEY (`admin_id`) 
     REFERENCES `users`(`id`) 
     ON DELETE CASCADE 

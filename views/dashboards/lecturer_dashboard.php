@@ -19,9 +19,36 @@ $stmt->execute();
 $stmt->bind_result($lecturerName);
 $stmt->fetch();
 $stmt->close();
+$notifications = [];
+$notificationCount = 0;
+$hasNotifications = false;
 
 
+
+$notificationQuery = "SELECT title, message, created_at, is_read 
+                      FROM lecturer_notifications 
+                      WHERE lecturer_id = ? AND is_read = 0
+                      ORDER BY created_at DESC";
+
+$stmt = $conn->prepare($notificationQuery);
+$stmt->bind_param("i", $lecturerId);
+$stmt->execute();
+$result = $stmt->get_result();
+$notifications = [];
+
+while ($row = $result->fetch_assoc()) {
+    $notifications[] = $row;
+}
+$stmt->close();
+// Check if there are any unread notifications
+if (!empty($notifications)) {
+    $hasNotifications = true;
+    $notificationCount = count($notifications); // Count the unread notifications
+}
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +60,7 @@ $stmt->close();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-   <style>
+    <style>
         /* Custom Styles */
         body {
             font-family: 'poppins', Arial, sans-serif;
@@ -139,6 +166,22 @@ $stmt->close();
             height: 400px;
         }
 
+        .dropdown-menu {
+            max-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown-menu .dropdown-item {
+            white-space: normal;
+            padding: 10px 15px;
+        }
+
+        .dropdown-menu .dropdown-item strong {
+            font-weight: 600;
+        }
+
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -158,16 +201,16 @@ $stmt->close();
 
     <!-- Sidebar -->
     <div class="sidebar">
-    <h2>Lecturer Dashboard</h2>
-    <a href="../lecturer/add_students.php"><i class="fas fa-user-plus"></i> Add Students</a>
-    <a href="../lecturer/modify_students.php"><i class="fas fa-users"></i> Student Management</a> 
-    <a href="../lecturer/request_lab.php"><i class="fas fa-calendar-plus"></i> Schedule Lab Sessions</a>
-    <a href="../lecturer/lab_schedule.php"><i class="fas fa-calendar-alt"></i> View Lab Schedule</a>
-    <a href="../lecturer/view_attendance.php"><i class="fas fa-file-alt"></i> View Attendance Report</a>
-    <a href="../lecturer/report_issue.php"><i class="fas fa-exclamation-circle"></i> Report Issue</a>
-    <a href="../lecturer/check_complaints.php"><i class="fas fa-question-circle"></i> Check Issue Status</a>
+        <h2>Lecturer Dashboard</h2>
+        <a href="../lecturer/add_students.php"><i class="fas fa-user-plus"></i> Add Students</a>
+        <a href="../lecturer/modify_students.php"><i class="fas fa-users"></i> Student Management</a>
+        <a href="../lecturer/request_lab.php"><i class="fas fa-calendar-plus"></i> Schedule Lab Sessions</a>
+        <a href="../lecturer/lab_schedule.php"><i class="fas fa-calendar-alt"></i> View Lab Schedule</a>
+        <a href="../lecturer/view_attendance.php"><i class="fas fa-file-alt"></i> View Attendance Report</a>
+        <a href="../lecturer/report_issue.php"><i class="fas fa-exclamation-circle"></i> Report Issue</a>
+        <a href="../lecturer/check_complaints.php"><i class="fas fa-question-circle"></i> Check Issue Status</a>
 
-</div>
+    </div>
 
 
     <!-- Main Content -->
@@ -177,14 +220,52 @@ $stmt->close();
             <div>
                 <h4>Welcome, <?php echo htmlspecialchars($lecturerName); ?></h4>
             </div>
-            <div class="profile-dropdown dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    Profile
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="../../includes/change_password.php">Change Password</a></li>
-                    <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
-                </ul>
+            <div class="d-flex align-items-center">
+                <!-- Notification Bell -->
+                <div class="dropdown me-3">
+                    <button
+                        class="btn btn-outline-secondary position-relative"
+                        type="button"
+                        id="notificationBell"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        onclick="markNotificationsAsRead()">
+                        <i class="fas fa-bell"></i>
+                        <!-- Display the badge for new notifications -->
+                        <?php if ($hasNotifications): ?>
+                            <span
+                                id="notificationBadge"
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <?php echo $notificationCount; ?>
+                            </span>
+                        <?php endif; ?>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationBell">
+                        <?php if (!empty($notifications)): ?>
+                            <?php foreach ($notifications as $notification): ?>
+                                <li class="dropdown-item">
+                                    <strong><?php echo htmlspecialchars($notification['title']); ?></strong><br>
+                                    <small><?php echo htmlspecialchars($notification['message']); ?></small><br>
+                                    <small class="text-muted"><?php echo htmlspecialchars($notification['date']); ?></small>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li class="dropdown-item text-center text-muted">No Notifications</li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+
+
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Profile
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="../../includes/change_password.php">Change Password</a></li>
+                        <li><a class="dropdown-item" href="../../controllers/logout.php">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -313,6 +394,31 @@ $stmt->close();
                 .catch(error => console.error('Error fetching attendance data:', error));
         });
     </script>
+    <script>
+        function markNotificationsAsRead() {
+            // Fetch unread notifications count and update the server
+            fetch('../../controllers/lecturer_mark_notifications_read.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Hide the badge
+                        const badge = document.getElementById('notificationBadge');
+                        if (badge) {
+                            badge.style.display = 'none';
+                        }
+                    } else {
+                        console.error('Failed to mark notifications as read.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+
 
 </body>
 

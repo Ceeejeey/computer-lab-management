@@ -56,6 +56,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception("Failed to send notifications to lecturers. Error: " . $notification_stmt->error);
         }
 
+        // Insert notifications for all students
+        $student_notification_query = "
+            INSERT INTO student_notifications (student_id, title, message) 
+            SELECT id, ?, ? 
+            FROM students
+        ";
+        $student_notification_stmt = $conn->prepare($student_notification_query);
+        $student_notification_stmt->bind_param("ss", $notification_title, $notification_message);
+
+        if (!$student_notification_stmt->execute()) {
+            throw new Exception("Failed to send notifications to students. Error: " . $student_notification_stmt->error);
+        }
+
         // Commit the transaction
         $conn->commit();
 
@@ -70,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Close the prepared statements and the connection
         if (isset($stmt)) $stmt->close();
         if (isset($notification_stmt)) $notification_stmt->close();
+        if (isset($student_notification_stmt)) $student_notification_stmt->close();
         $conn->close();
     }
 }

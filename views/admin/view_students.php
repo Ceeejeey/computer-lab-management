@@ -17,6 +17,7 @@ $studentResult = $conn->query($studentQuery);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,10 +25,10 @@ $studentResult = $conn->query($studentQuery);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family:'poppins', Arial, sans-serif;
+            font-family: 'poppins', Arial, sans-serif;
             background-color: #f8fafc;
         }
-        
+
         .container {
             margin-top: 50px;
         }
@@ -50,79 +51,90 @@ $studentResult = $conn->query($studentQuery);
         .table tbody tr:hover {
             background-color: #f1f3f5;
         }
-        
+
         .table-container {
             margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="card">
-        <div class="card-header bg-primary text-white text-center">
-            <h4>Student List</h4>
-        </div>
-        <div class="card-body">
-            <!-- Batch Filter Form -->
-            <form method="GET" class="mb-3 d-flex align-items-center">
-                <label for="batch" class="me-2">Filter by Batch:</label>
-                <select name="batch" id="batch" class="form-select w-auto me-2">
-                    <option value="">All Batches</option>
-                    <?php
-                    // Populate batch dropdown options
-                    if ($batchResult->num_rows > 0) {
-                        while ($batchRow = $batchResult->fetch_assoc()) {
-                            $selected = ($batchRow['batch'] == $selectedBatch) ? 'selected' : '';
-                            echo "<option value='{$batchRow['batch']}' $selected>{$batchRow['batch']}</option>";
-                        }
-                    }
-                    ?>
-                </select>
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </form>
-
-            <!-- Student Table -->
-            <div class="table-wrapper">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Batch</th>
-                            <th>Joined Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Student List</h4>
+            </div>
+            <div class="card-body">
+                <!-- Batch Filter Form -->
+                <form method="GET" class="mb-3 d-flex align-items-center">
+                    <label for="batch" class="me-2">Select Batch:</label>
+                    <select name="batch" id="batch" class="form-select w-auto me-2">
+                        <option value="">Select a Batch</option>
                         <?php
-                        // Display students in the selected batch
-                        if ($studentResult->num_rows > 0) {
-                            while ($row = $studentResult->fetch_assoc()) {
-                                echo "<tr>
-                                    <td>{$row['reg_no']}</td>
-                                    <td>{$row['name']}</td>
-                                    <td>{$row['email']}</td>
-                                    <td>{$row['batch']}</td>
-                                    <td>" . date("d-m-Y", strtotime($row['created_at'])) . "</td>
-                                </tr>";
+                        // Populate batch dropdown options
+                        if ($batchResult->num_rows > 0) {
+                            while ($batchRow = $batchResult->fetch_assoc()) {
+                                $selected = ($batchRow['batch'] == $selectedBatch) ? 'selected' : '';
+                                echo "<option value='{$batchRow['batch']}' $selected>{$batchRow['batch']}</option>";
                             }
-                        } else {
-                            echo "<tr><td colspan='5' class='text-center'>No students found</td></tr>";
                         }
                         ?>
-                    </tbody>
-                </table>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </form>
+
+                <!-- Download CSV Button (only show if batch is selected) -->
+                <?php if ($selectedBatch): ?>
+                    <a href="../../controllers/admin_download_student_report.php?batch=<?php echo $selectedBatch; ?>" class="btn btn-success mb-3">Download Student Report (CSV)</a>
+                <?php endif; ?>
+
+                <!-- Student Table -->
+                <?php if ($selectedBatch): ?>
+                    <div class="table-wrapper">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Batch</th>
+                                    <th>Joined Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                // Display students in the selected batch
+                                if ($studentResult->num_rows > 0) {
+                                    while ($row = $studentResult->fetch_assoc()) {
+                                        echo "<tr>
+                                        <td>{$row['reg_no']}</td>
+                                        <td>{$row['name']}</td>
+                                        <td>{$row['email']}</td>
+                                        <td>{$row['batch']}</td>
+                                        <td>" . date("d-m-Y", strtotime($row['created_at'])) . "</td>
+                                    </tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='5' class='text-center'>No students found</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <p class="text-center">Please select a batch to see the students.</p>
+                <?php endif; ?>
+
+                <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+
             </div>
-            <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
-
         </div>
-        
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
 
 <?php

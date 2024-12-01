@@ -9,6 +9,7 @@ $lecturerResult = $conn->query($lecturerQuery);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,10 +17,10 @@ $lecturerResult = $conn->query($lecturerQuery);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family:'poppins', Arial, sans-serif;
+            font-family: 'poppins', Arial, sans-serif;
             background-color: #f8fafc;
         }
-        
+
         .container {
             margin-top: 50px;
         }
@@ -42,62 +43,66 @@ $lecturerResult = $conn->query($lecturerQuery);
         .table tbody tr:hover {
             background-color: #f1f3f5;
         }
-        
+
         .table-container {
             margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="card">
-        <div class="card-header bg-primary text-white text-center">
-            <h4>Lecturer List</h4>
-        </div>
-        <div class="card-body">
-            <!-- Lecturer Table -->
-            <div class="table-wrapper">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // Display lecturers
-                        if ($lecturerResult->num_rows > 0) {
-                            while ($row = $lecturerResult->fetch_assoc()) {
-                                echo "<tr>
-                                    <td>{$row['id']}</td>
-                                    <td>{$row['name']}</td>
-                                    <td>{$row['email']}</td>
-                                    <td>
-                                        <form action='../../controllers/delete_lecturer.php' method='POST' style='display:inline;'>
-                                            <input type='hidden' name='lecturer_id' value='{$row['id']}'>
-                                            <button type='submit' class='btn btn-danger btn-sm'>Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='4' class='text-center'>No lecturers found</td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
+    <div class="container">
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Lecturer List</h4>
             </div>
-            <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+            <div class="card-body">
+                <!-- Download CSV Button -->
+                <a href="../../controllers/admin_download_lecturer_report.php" class="btn btn-success mb-3">Download Lecturer Report (CSV)</a>
+                <!-- Lecturer Table -->
+                <div class="table-wrapper">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Display lecturers
+                            if ($lecturerResult->num_rows > 0) {
+                                while ($row = $lecturerResult->fetch_assoc()) {
+                                    echo "<tr>
+                            <td>{$row['id']}</td>
+                            <td>{$row['name']}</td>
+                            <td>{$row['email']}</td>
+                            <td>
+                                <form action='../../controllers/delete_lecturer.php' method='POST' style='display:inline;'>
+                                    <input type='hidden' name='lecturer_id' value='{$row['id']}'>
+                                    <button type='submit' class='btn btn-danger btn-sm'>Delete</button>
+                                </form>
+                            </td>
+                        </tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='4' class='text-center'>No lecturers found</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+                <a href="../dashboards/admin_dashboard.php" class="btn btn-secondary w-100 mt-3">Go Back to Dashboard</a>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
 
 <?php
